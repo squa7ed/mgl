@@ -1,0 +1,22 @@
+{
+  "name": "mgl",
+  "version": "0.0.1",
+  "description": "A simple HTML5 game engine written in JavaScript ES6.",
+  "main": "index.js",
+  "repository": "https://github.com/squa7ed/mgl",
+  "author": "squa7ed <squa7ed@outlook.com>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "build": "webpack",
+    "start": "yarn run build && webpack-dev-server"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.5",
+    "babel-preset-env": "^1.7.0",
+    "webpack": "^4.16.3",
+    "webpack-cli": "^3.1.0",
+    "webpack-dev-server": "^3.1.5"
+  }
+}
