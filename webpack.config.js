@@ -9,6 +9,10 @@ module.exports = {
     filename: '[name].js'
   },
   devtool: 'source-map',
+  devServer: {
+    contentBase: `${__dirname}`,
+    watchContentBase: true
+  },
   module: {
     rules: [
       {

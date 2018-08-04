@@ -9,7 +9,8 @@
   "private": true,
   "scripts": {
     "build": "webpack",
-    "start": "yarn run build && webpack-dev-server"
+    "watch": "webpack --watch",
+    "start": "webpack-dev-server --hot"
   },
   "devDependencies": {
     "babel-core": "^6.26.3",
