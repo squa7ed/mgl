@@ -1,4 +1,4 @@
-import Game from './src/game';
+import Main from './src/main';
 
-let game = new Game();
+let game = new Main();
 game.start();
