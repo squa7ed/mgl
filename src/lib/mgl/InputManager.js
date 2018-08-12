@@ -9,6 +9,8 @@ export default class InputManager extends EventEmitter {
   constructor(game) {
     super();
     this.game = game;
+    // input handler
+    this.inputHandler = undefined;
     // input enabled items.
     this._items = [];
     // input event queue
@@ -18,12 +20,21 @@ export default class InputManager extends EventEmitter {
   }
 
   boot() {
-    this.game.canvas.addEventListener('mousedown', this.inputHandler.bind(this), { passive: false });
+    let handler = event => {
+      this._queue.push(event);
+    }
+    this.inputHandler = handler.bind(this);
+    this.game.canvas.addEventListener('mousedown', this.inputHandler);
+    this.game.canvas.addEventListener('mousemove', this.inputHandler);
+    this.game.canvas.addEventListener('mouseup', this.inputHandler);
   }
 
   dispose() {
     this.game = undefined;
     this._items.length = 0;
+    this.game.canvas.removeEventListener('mousedown', this.inputHandler);
+    this.game.canvas.removeEventListener('mousemove', this.inputHandler);
+    this.game.canvas.removeEventListener('mouseup', this.inputHandler);
     super.dispose();
   }
 
@@ -53,14 +64,6 @@ export default class InputManager extends EventEmitter {
     if (sprite) {
       this.emit(event.type, sprite, pointer.x, pointer.y);
     }
-  }
-
-  /**
-  * 
-  * @param {MouseEvent} event 
-  */
-  inputHandler(event) {
-    this._queue.push(event);
   }
 
   translateCoordinates(x, y) {
