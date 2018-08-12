@@ -1,15 +1,15 @@
 import Sprite from './Sprite';
+import EventEmitter from "./EventEmitter";
 
-export default class Game {
+export default class Game extends EventEmitter {
   constructor() {
+    super();
     this.canvas = undefined;
     this.context = undefined;
 
     this.isStarted = false;
 
     this.bindLoop = this.loop.bind(this);
-
-    this.onMouseDown = undefined;
 
     this.displayList = [];
     this.inputList = [];
@@ -33,8 +33,8 @@ export default class Game {
   inputHandler(event) {
     let pointer = this.translateCoordinates(event.clientX, event.clientY);
     let sprite = this.inputList.find(item => item.isMouseOver(pointer.x, pointer.y));
-    if (sprite && this.onMouseDown && typeof this.onMouseDown === 'function') {
-      this.onMouseDown.call(this, sprite);
+    if (sprite) {
+      this.emit('mousedown', sprite);
     }
   }
 

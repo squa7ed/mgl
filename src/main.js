@@ -13,7 +13,6 @@ let cnt = 0;
 
 export default class Main extends mgl.Game {
   create() {
-    this.onMouseDown = this.onButtonPressed.bind(this);
     const tileSize = this.canvas.width / (COLUMNS + 2);
     const fieldOffsetY = (this.canvas.height - tileSize * ROWS) / 3;
     const fieldOffsetX = tileSize;
@@ -42,6 +41,7 @@ export default class Main extends mgl.Game {
       item.data.set('color', index);
       this.enabelInput(item);
     }
+    this.on('mousedown', this.onButtonPressed,this);
   }
 
   onButtonPressed(button) {
