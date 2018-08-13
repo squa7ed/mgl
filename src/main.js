@@ -45,6 +45,7 @@ export default class Main extends mgl.Game {
   }
 
   onButtonPressed(button) {
+    console.debug(button.data.get('color'));
     if (this.field[0][0].data.get('color') !== button.data.get('color')) {
       this.flood(button.data.get('color'), 0, 0);
     }
@@ -80,11 +81,11 @@ export default class Main extends mgl.Game {
       matched
         .sort((a, b) => Math.hypot(a.x, a.y) - Math.hypot(b.x, b.y))
         .forEach((sprite, index) => {
-          setTimeout(() => {
+          this.timer.delayedCallback(() => {
             sprite.data.set('color', color);
             sprite.color = COLORS[color];
-          }, index * delay);
-        });
+          }, index * delay, this);
+        })
     }
   }
 

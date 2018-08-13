@@ -1,6 +1,7 @@
 import Sprite from './Sprite';
 import EventEmitter from "./EventEmitter";
 import InputManager from './InputManager';
+import Timer from './Timer';
 
 export default class Game extends EventEmitter {
   constructor() {
@@ -14,6 +15,10 @@ export default class Game extends EventEmitter {
 
     this.displayList = [];
     this.input = new InputManager(this);
+    this.timer = new Timer(this);
+
+    this._lastTime = 0;
+    this._dt = 0;
 
     this.setupCanvas();
   }
@@ -30,6 +35,7 @@ export default class Game extends EventEmitter {
   start() {
     if (!this.isStarted) {
       console.debug('starting game.');
+      this._lastTime = performance.now();
       this.startAnimation();
       this.create();
     }
@@ -48,8 +54,12 @@ export default class Game extends EventEmitter {
   }
 
   update() {
-    this.input.update();
-   }
+    let now = performance.now();
+    this._dt = now - this._lastTime;
+    this.input.update(now, this._dt);
+    this.timer.update(now, this._dt);
+    this._lastTime = now;
+  }
 
   render() {
     this.context.fillStyle = '#000';
