@@ -1,43 +1,41 @@
 import mgl from "./lib/mgl";
 const ROWS = 14;
 const COLUMNS = 14;
-const COLORS = [
-  '#ff0000',
-  '#00ff00',
-  '#0000ff',
-  '#ff00ee',
-  '#ffee00',
-];
+const COLORS = 6;
 
 let cnt = 0;
 
 export default class Main extends mgl.Game {
+  preload() {
+    for (let i = 0; i < 6; i++) {
+      this.load.image(`button-${i}`, `assets/button-${i}.png`);
+      this.load.image(`tile-${i}`, `assets/tile-${i}.png`);
+    }
+  }
+
   create() {
-    const tileSize = this.canvas.width / (COLUMNS + 2);
+    const tileSize = this.textures.get('tile-0').width;
     const fieldOffsetY = (this.canvas.height - tileSize * ROWS) / 3;
     const fieldOffsetX = tileSize;
     const buttonsOffsetY = fieldOffsetY + tileSize * ROWS + 2 * tileSize;
     let index = 0;
-    let gap = Math.round((COLUMNS * tileSize - 2 * COLORS.length * tileSize) / (COLORS.length - 1));
     this.field = [];
     for (let r = 0; r < ROWS; r++) {
       this.field[r] = [];
       for (let c = 0; c < COLUMNS; c++) {
-        index = Math.round(Math.random() * 1000) % COLORS.length;
-        let item = this.addSprite(fieldOffsetX + c * tileSize, fieldOffsetY + r * tileSize, COLORS[index], tileSize, tileSize);
+        index = Math.round(Math.random() * 1000) % COLORS;
+        let item = this.addSprite(fieldOffsetX + c * tileSize, fieldOffsetY + r * tileSize, `tile-${index}`);
         item.data.set('row', r);
         item.data.set('column', c);
         item.data.set('color', index);
         this.field[r][c] = item;
       }
     }
-    for (index = 0; index < COLORS.length; index++) {
+    for (index = 0; index < COLORS; index++) {
       let item = this.addSprite(
-        fieldOffsetX + index * tileSize * 2 + index * gap,
+        fieldOffsetX + index * tileSize * 2 + 6 * index,
         buttonsOffsetY,
-        COLORS[index],
-        tileSize * 2,
-        tileSize * 2);
+        `button-${index}`);
       item.data.set('color', index);
       this.enabelInput(item);
     }
@@ -83,7 +81,7 @@ export default class Main extends mgl.Game {
         .forEach((sprite, index) => {
           this.timer.delayedCallback(() => {
             sprite.data.set('color', color);
-            sprite.color = COLORS[color];
+            sprite.texture = this.textures.get(`tile-${color}`);
           }, index * delay, this);
         })
     }

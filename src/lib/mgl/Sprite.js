@@ -1,16 +1,24 @@
-/**
- * Simple sprite object, we use colored rectangles at this moment.
- */
+import Game from "./Game";
+
 export default class Sprite {
-  constructor(game, x, y, color, width, height) {
+  /**
+   * 
+   * @param {Game} game 
+   * @param {number} x 
+   * @param {number} y 
+   * @param {string} textureKey 
+   * @param {number} width 
+   * @param {number} height 
+   */
+  constructor(game, x, y, textureKey, width, height) {
     this.game = game;
     this.x = x || 0;
     this.y = y || 0;
+    // texture
+    this.texture = game.textures.get(textureKey);
     // size
-    this.width = width || 0;
-    this.height = height || 0;
-    // color
-    this.color = color || '#ff0000'
+    this.width = width || this.texture.width;
+    this.height = height || this.texture.height;
     this.data = new Map();
   }
 
@@ -19,10 +27,7 @@ export default class Sprite {
    * @param {CanvasRenderingContext2D} context 
    */
   render(context) {
-    const color = context.fillStyle;
-    context.fillStyle = this.color;
-    context.fillRect(this.x, this.y, this.width, this.height);
-    context.fillStyle = color;
+    context.drawImage(this.texture.source, this.x, this.y, this.width, this.height);
   }
 
   isMouseOver(x, y) {

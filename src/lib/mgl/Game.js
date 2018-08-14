@@ -1,11 +1,13 @@
 import Sprite from './Sprite';
-import EventEmitter from "./EventEmitter";
 import InputManager from './InputManager';
 import Timer from './Timer';
+import TextureManager from './TextureManager';
+import Loader from './Loader';
+import EventEmitter from './EventEmitter';
 
-export default class Game extends EventEmitter {
+export default class Game {
   constructor() {
-    super();
+    this.events = new EventEmitter();
     this.canvas = undefined;
     this.context = undefined;
 
@@ -16,6 +18,8 @@ export default class Game extends EventEmitter {
     this.displayList = [];
     this.input = new InputManager(this);
     this.timer = new Timer(this);
+    this.textures = new TextureManager(this);
+    this.load = new Loader(this);
 
     this._lastTime = 0;
     this._dt = 0;
@@ -29,7 +33,7 @@ export default class Game extends EventEmitter {
     this.canvas.height = 568;
     document.getElementById('container').appendChild(this.canvas);
     this.context = this.canvas.getContext('2d');
-    this.emit('boot');
+    this.events.emit('boot');
   }
 
   start() {
@@ -37,13 +41,21 @@ export default class Game extends EventEmitter {
       console.debug('starting game.');
       this._lastTime = performance.now();
       this.startAnimation();
-      this.create();
+      this.preload();
+      if (this.load.pending !== 0) {
+        this.load.once('load', this.create, this);
+      } else {
+        this.create();
+      }
     }
+    console.debug(this);
   }
 
   startAnimation() {
     requestAnimationFrame(this.bindLoop);
   }
+
+  preload() { }
 
   create() { }
 

@@ -15,8 +15,7 @@ export default class InputManager extends EventEmitter {
     this._items = [];
     // input event queue
     this._queue = [];
-    game.once('boot', this.boot, this);
-    game.once('exit', this.dispose, this);
+    game.events.once('boot', this.boot, this);
   }
 
   boot() {
@@ -27,6 +26,7 @@ export default class InputManager extends EventEmitter {
     this.game.canvas.addEventListener('mousedown', this.inputHandler);
     this.game.canvas.addEventListener('mousemove', this.inputHandler);
     this.game.canvas.addEventListener('mouseup', this.inputHandler);
+    this.game.events.once('exit', this.dispose, this);
   }
 
   dispose() {
