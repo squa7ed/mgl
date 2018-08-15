@@ -24,7 +24,7 @@ export default class Main extends mgl.Game {
       this.field[r] = [];
       for (let c = 0; c < COLUMNS; c++) {
         index = Math.round(Math.random() * 1000) % COLORS;
-        let item = this.addSprite(fieldOffsetX + c * tileSize, fieldOffsetY + r * tileSize, `tile-${index}`);
+        let item = this.add.sprite(fieldOffsetX + c * tileSize, fieldOffsetY + r * tileSize, `tile-${index}`);
         item.data.set('row', r);
         item.data.set('column', c);
         item.data.set('color', index);
@@ -32,18 +32,17 @@ export default class Main extends mgl.Game {
       }
     }
     for (index = 0; index < COLORS; index++) {
-      let item = this.addSprite(
+      let item = this.add.sprite(
         fieldOffsetX + index * tileSize * 2 + 6 * index,
         buttonsOffsetY,
         `button-${index}`);
       item.data.set('color', index);
-      this.enabelInput(item);
+      this.input.enable(item);
     }
     this.input.on('mousedown', this.onButtonPressed, this);
   }
 
   onButtonPressed(button) {
-    console.debug(button.data.get('color'));
     if (this.field[0][0].data.get('color') !== button.data.get('color')) {
       this.flood(button.data.get('color'), 0, 0);
     }

@@ -4,6 +4,8 @@ import Timer from './Timer';
 import TextureManager from './TextureManager';
 import Loader from './Loader';
 import EventEmitter from './EventEmitter';
+import DisplayList from './DisplayList';
+import SpriteFactory from './SpriteFactory';
 
 export default class Game {
   constructor() {
@@ -15,11 +17,12 @@ export default class Game {
 
     this.bindLoop = this.loop.bind(this);
 
-    this.displayList = [];
+    this.displayList = new DisplayList(this);
     this.input = new InputManager(this);
     this.timer = new Timer(this);
     this.textures = new TextureManager(this);
     this.load = new Loader(this);
+    this.add = new SpriteFactory(this);
 
     this._lastTime = 0;
     this._dt = 0;
@@ -45,7 +48,6 @@ export default class Game {
       if (this.load.pending !== 0) {
         this.load.once('load', this.create, this);
       } else {
-        this.create();
       }
     }
     console.debug(this);
@@ -74,20 +76,6 @@ export default class Game {
   }
 
   render() {
-    this.context.fillStyle = '#000';
-    this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
-    this.displayList.forEach(sprite => sprite.render(this.context));
+    this.displayList.render(this.context);
   }
-
-
-  addSprite(x, y, color, width, height) {
-    let sprite = new Sprite(this, x, y, color, width, height);
-    this.displayList.push(sprite);
-    return sprite;
-  }
-
-  enabelInput(sprite) {
-    return this.input.enable(sprite);
-  }
-
 }
