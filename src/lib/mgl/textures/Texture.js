@@ -1,4 +1,3 @@
-
 export default class Texture {
   constructor(manager, key, source) {
     this.manager = manager;

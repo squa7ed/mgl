@@ -1,6 +1,6 @@
 import EventEmitter from "./EventEmitter";
 import Game from "./Game";
-import Texture from './Texture';
+import { Texture } from './textures';
 
 export default class Loader extends EventEmitter {
   /**

@@ -1,11 +1,9 @@
-import Sprite from './Sprite';
-import InputManager from './InputManager';
-import Timer from './Timer';
-import TextureManager from './TextureManager';
-import Loader from './Loader';
+import { DisplayList, SpriteFactory } from "./displayobjects";
 import EventEmitter from './EventEmitter';
-import DisplayList from './DisplayList';
-import SpriteFactory from './SpriteFactory';
+import InputManager from './InputManager';
+import Loader from './Loader';
+import { TextureManager } from './textures';
+import { Timer } from './timers';
 
 export default class Game {
   constructor() {
