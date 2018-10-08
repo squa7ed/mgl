@@ -1,4 +1,4 @@
-import { DisplayList, SpriteFactory } from "./displayobjects";
+import { DisplayList, DisplayObjectFactory } from "./displayobjects";
 import EventEmitter from './EventEmitter';
 import InputManager from './InputManager';
 import Loader from './Loader';
@@ -20,7 +20,7 @@ export default class Game {
     this.timer = new Timer(this);
     this.textures = new TextureManager(this);
     this.load = new Loader(this);
-    this.add = new SpriteFactory(this);
+    this.add = new DisplayObjectFactory(this);
 
     this._lastTime = 0;
     this._dt = 0;
@@ -74,6 +74,7 @@ export default class Game {
   }
 
   render() {
+    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.displayList.render(this.context);
   }
 }

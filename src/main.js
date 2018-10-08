@@ -2,8 +2,7 @@ import mgl from "./lib/mgl";
 const ROWS = 14;
 const COLUMNS = 14;
 const COLORS = 6;
-
-let cnt = 0;
+const MOVE_LIMIT = 25;
 
 export default class Main extends mgl.Game {
   preload() {
@@ -14,36 +13,78 @@ export default class Main extends mgl.Game {
   }
 
   create() {
-    const tileSize = this.textures.get('tile-0').width;
-    const fieldOffsetY = (this.canvas.height - tileSize * ROWS) / 3;
-    const fieldOffsetX = tileSize;
-    const buttonsOffsetY = fieldOffsetY + tileSize * ROWS + 2 * tileSize;
+    this.width = this.canvas.width;
+    this.height = this.canvas.height;
+
+    this.tileSize = this.textures.get('tile-0').width;
+    this.fieldOffsetX = Math.round((this.width - this.tileSize * 14) / 2);
+    this.fieldOffsetY = Math.round(this.height / 4);
+    this.movesX = Math.round(this.width / 8);
+    this.movesY = Math.round(this.height / 6);
+    this.moveLimitX = Math.round(this.width * 5 / 8);
+    this.movesLimitY = Math.round(this.height / 6);
+
+    this._moves = 0;
+    this.gameOver = false;
+    this.isDone = false;
+    this.isClickable = true;
+
+    this.createField();
+    this.createButtons();
+    this.createTexts();
+  }
+
+  createField() {
     let index = 0;
     this.field = [];
     for (let r = 0; r < ROWS; r++) {
       this.field[r] = [];
       for (let c = 0; c < COLUMNS; c++) {
         index = Math.round(Math.random() * 1000) % COLORS;
-        let item = this.add.sprite(fieldOffsetX + c * tileSize, fieldOffsetY + r * tileSize, `tile-${index}`);
+        let item = this.add.sprite(this.fieldOffsetX + c * this.tileSize, this.fieldOffsetY + r * this.tileSize, `tile-${index}`);
         item.data.set('row', r);
         item.data.set('column', c);
         item.data.set('color', index);
         this.field[r][c] = item;
       }
     }
-    for (index = 0; index < COLORS; index++) {
-      let item = this.add.sprite(
-        fieldOffsetX + index * tileSize * 2 + 6 * index,
-        buttonsOffsetY,
+  }
+
+  createButtons() {
+    this.buttons = [];
+    // color buttons
+    for (let index = 0; index < 3; index++) {
+      let button = this.add.sprite(
+        (this.width / 8) + (this.width / 4) * index,
+        this.height * 12 / 16,
         `button-${index}`);
-      item.data.set('color', index);
-      this.input.enable(item);
+      button.data.set('color', index);
+      this.input.enable(button);
+      this.buttons.push(button);
+    }
+    for (let index = 3; index < 6; index++) {
+      let button = this.add.sprite(
+        (this.width / 8) + (this.width / 4) * (index - 3),
+        this.height * 14 / 16,
+        `button-${index}`);
+      button.data.set('color', index);
+      this.input.enable(button);
+      this.buttons.push(button);
     }
     this.input.on('mousedown', this.onButtonPressed, this);
   }
 
+  createTexts() {
+    // moves
+    this.textMoves = this.add.text(this.movesX, this.movesY, this.moves, { fontSize: 30 });
+    // move limit
+    this.textMovelImit = this.add.text(this.moveLimitX, this.movesLimitY, MOVE_LIMIT, { fontSize: 30 });
+  }
+
   onButtonPressed(button) {
-    if (this.field[0][0].data.get('color') !== button.data.get('color')) {
+    if (this.field[0][0].data.get('color') !== button.data.get('color') && this.isClickable) {
+      this.isClickable = false;
+      this.moves++;
       this.flood(button.data.get('color'), 0, 0);
     }
   }
@@ -83,7 +124,43 @@ export default class Main extends mgl.Game {
             sprite.texture = this.textures.get(`tile-${color}`);
           }, index * delay, this);
         })
+      this.timer.delayedCallback(this.checkGameOver, delay * len, this);
     }
+  }
+
+  checkGameOver() {
+    if (this.checkIsDone() && this.moves <= MOVE_LIMIT) {
+      // win
+      this.gameOver = true;
+      this.gameWon = true;
+    } else if (!this.checkIsDone() && this.moves >= MOVE_LIMIT) {
+      // lose
+      this.gameOver = true;
+      this.gameWon = false;
+    }
+    if (this.gameOver) {
+      this.moves = 100;
+    }
+    this.isClickable = true;
+  }
+
+  checkIsDone() {
+    for (let r = ROWS - 1; r >= 0; r--) {
+      for (let c = COLUMNS - 1; c >= 0; c--) {
+        if (this.field[r][c].data.get('color') !== this.field[0][0].data.get('color')) {
+          this.isDone = false;
+          return false;
+        }
+      }
+    }
+    this.isDone = true;
+    return true;
+  }
+
+  get moves() { return this._moves; }
+  set moves(value) {
+    this._moves = value;
+    this.textMoves.text = value;
   }
 
 }
