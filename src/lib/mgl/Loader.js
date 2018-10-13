@@ -1,29 +1,24 @@
 import EventEmitter from "./EventEmitter";
-import Game from "./Game";
 import { Texture } from './textures';
 
 export default class Loader extends EventEmitter {
-  /**
-   * 
-   * @param {Game} game 
-   */
-  constructor(game) {
+  constructor(scene) {
     super();
-    this.game = game;
-    this.textures = game.textures;
+    this.scene = scene;
+    this.textures = scene.textures;
     this._pending = 0;
-    game.events.once('boot', this.boot, this);
+    scene.once('boot', this.boot, this);
   }
 
   boot() {
-    this.game.events.once('exit', this.dispose, this);
+    this.scene.events.once('exit', this.dispose, this);
   }
 
   dispose() {
-    if (this.game === undefined) {
+    if (this.scene === undefined) {
       return;
     }
-    this.game = undefined;
+    this.scene = undefined;
     super.dispose();
   }
 
@@ -50,7 +45,8 @@ export default class Loader extends EventEmitter {
     }
     this._pending = value;
     if (this._pending === 0) {
-      this.emit('load')
+      console.debug('loaded');
+      this.scene.emit('load');
     }
   }
 }

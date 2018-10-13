@@ -1,6 +1,6 @@
 export default class DisplayList {
-  constructor(game) {
-    this._game = game;
+  constructor(scene) {
+    this._scene = scene;
     this._items = [];
   }
 

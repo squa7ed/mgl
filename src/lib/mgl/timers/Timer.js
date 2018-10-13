@@ -2,9 +2,9 @@ import EventEmitter from '../EventEmitter';
 import TimerEvent from './TimerEvent';
 
 export default class Timer extends EventEmitter {
-  constructor(game) {
+  constructor(scene) {
     super();
-    this.game = game;
+    this.scene = scene;
     this._pendingAdd = [];
     this._pendingRemove = [];
     this._callbacks = [];

@@ -1,10 +1,10 @@
-import mgl from "./lib/mgl";
+import { Game, Scene } from "./lib/mgl";
 const ROWS = 14;
 const COLUMNS = 14;
 const COLORS = 6;
 const MOVE_LIMIT = 25;
 
-export default class Main extends mgl.Game {
+class StartScene extends Scene {
   preload() {
     for (let i = 0; i < 6; i++) {
       this.load.image(`button-${i}`, `assets/button-${i}.png`);
@@ -13,8 +13,8 @@ export default class Main extends mgl.Game {
   }
 
   create() {
-    this.width = this.canvas.width;
-    this.height = this.canvas.height;
+    this.width = this.game.canvas.width;
+    this.height = this.game.canvas.height;
 
     this.tileSize = this.textures.get('tile-0').width;
     this.fieldOffsetX = Math.round((this.width - this.tileSize * 14) / 2);
@@ -163,4 +163,15 @@ export default class Main extends mgl.Game {
     this.textMoves.text = value;
   }
 
+}
+
+export default class Main {
+  constructor() {
+    this._game = new Game();
+    this._scene = new StartScene(this._game, 'start');
+  }
+
+  start() {
+    this._game.start(this._scene);
+  }
 }

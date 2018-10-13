@@ -1,7 +1,2 @@
-import Game from './Game';
-
-const mgl = {
-  Game: Game
-};
-
-export default mgl;
+export { default as Game } from './Game';
+export { Scene as Scene } from './scene';
