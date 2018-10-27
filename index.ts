@@ -97,7 +97,7 @@ export class StartScene extends Scene {
         this.stageHeight * 12 / 16,
         `button-${index}`);
       button.data.set('color', index);
-      this.input.enable(button);
+      button.setInteractive();
       this.buttons.push(button);
     }
     for (let index = 3; index < 6; index++) {
@@ -106,10 +106,10 @@ export class StartScene extends Scene {
         this.stageHeight * 14 / 16,
         `button-${index}`);
       button.data.set('color', index);
-      this.input.enable(button);
+      button.setInteractive();
       this.buttons.push(button);
     }
-    this.input.on('mousedown', this.onButtonPressed, this);
+    this.input.on('displayObjectDown', this.onButtonPressed, this);
   }
 
   createTexts() {

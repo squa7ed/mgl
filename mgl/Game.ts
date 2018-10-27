@@ -1,5 +1,5 @@
 import { EventEmitter } from './EventEmitter';
-import { InputManager } from './InputManager';
+import { InputManager } from './input/InputManager';
 import { TextureManager } from './textures/TextureManager';
 import { Scene } from './scene/Scene';
 
@@ -60,7 +60,6 @@ export class Game {
     if (this._isStarted) {
       return;
     }
-    console.debug('starting game.');
     this._lastUpdateTime = performance.now();
     scene.onLoad();
     if (scene.load.pending !== 0) {
@@ -85,9 +84,8 @@ export class Game {
   update(): void {
     let now = performance.now();
     this._deltaTime = now - this._lastUpdateTime;
-    this._currentScene.onUpdate(now, this._deltaTime);
-    this._currentScene.timer.update(now, this._deltaTime);
     this.input.update(now, this._deltaTime);
+    this._currentScene.update(now, this._deltaTime);
     this._lastUpdateTime = now;
   }
 

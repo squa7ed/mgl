@@ -1,22 +1,22 @@
 import { EventEmitter } from "../EventEmitter";
 import { DisplayList } from '../displayobjects/DisplayList';
 import { Loader } from '../Loader';
-import { InputManager } from "../InputManager";
+import { InputPlugin } from "../input/InputPlugin";
 import { Game } from "../Game";
 import { TextureManager } from "../textures/TextureManager";
 import { DisplayObjectFactory } from "../displayobjects/DisplayObjectFactory";
 import { Timer } from "../timers/Timer";
 
 export abstract class Scene {
-  constructor(protected readonly game: Game, private _key: string) {
+  constructor(private _game: Game, private _key: string) {
     this._displayList = new DisplayList(this);
     this._events = new EventEmitter();
     // this._input = _game.input;
     this._timer = new Timer(this);
     // this._textures = _game.textures;
-    this._textures = game.textures;
+    this._textures = _game.textures;
     this._add = new DisplayObjectFactory(this);
-    this._input = game.input;
+    this._input = new InputPlugin(this);
     this._load = new Loader(this);
   }
 
@@ -24,7 +24,7 @@ export abstract class Scene {
 
   private _events: EventEmitter;
 
-  private _input: InputManager;
+  private _input: InputPlugin;
 
   private _timer: Timer;
 
@@ -33,6 +33,8 @@ export abstract class Scene {
   private _load: Loader;
 
   private _add: DisplayObjectFactory;
+
+  get game() { return this._game; }
 
   get key() { return this._key; }
 
@@ -55,4 +57,11 @@ export abstract class Scene {
   abstract onCreate(): void;
 
   abstract onUpdate(time: number, dt: number): void;
+
+  update(time: number, dt: number): void {
+    this.timer.update(time, dt);
+    this.input.update(time, dt);
+    this.onUpdate(time, dt);
+  }
+
 }

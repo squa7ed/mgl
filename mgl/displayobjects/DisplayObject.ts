@@ -1,6 +1,7 @@
 import { EventEmitter } from "../EventEmitter";
-import { InputManager } from "../InputManager";
+import { InputManager } from "../input/InputManager";
 import { Scene } from "../scene/Scene";
+import { InteractiveObject } from "../input/InteractiveObject";
 
 export abstract class DisplayObject extends EventEmitter {
   constructor(private _scene: Scene) {
@@ -34,7 +35,7 @@ export abstract class DisplayObject extends EventEmitter {
     // interaction
     this._input = undefined;
   }
-  
+
   private _x: number;
   private _y: number;
   private _displayX: number;
@@ -60,9 +61,9 @@ export abstract class DisplayObject extends EventEmitter {
   // data
   private _data: Map<string, any>;
   // interaction
-  private _input: InputManager;
+  private _input: InteractiveObject;
 
-   //#region  getters and setters
+  //#region  getters and setters
   get scene() { return this._scene; }
   // coordinate
   get x() { return this._x; }
@@ -222,7 +223,11 @@ export abstract class DisplayObject extends EventEmitter {
   abstract render(context: CanvasRenderingContext2D): void;
 
   setInteractive() {
-    this._scene.input.enable(this);
+    if (this.input && this.input.isEnabled) {
+      return;
+    }
+    this._input = this._scene.input.createInteractiveObject(this);
+    this._input.enable();
     return this;
   }
 
@@ -246,7 +251,7 @@ export abstract class DisplayObject extends EventEmitter {
   //#endregion
 
   //#region private methods
-  _updateDisplayValues() {
+  private _updateDisplayValues() {
     this._displayX = this.x + (1 - this.scaleX) * (this.width * this.anchorX) - this.scaleX * this.width * this.originX;
     this._displayY = this.y + (1 - this.scaleY) * (this.anchorY * this.height) - this.scaleY * this.height * this.originY;
     this._displayWidth = this.width * this.scaleX;;

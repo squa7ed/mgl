@@ -17,4 +17,8 @@ export class DisplayList {
   render(context: CanvasRenderingContext2D): void {
     this._items.forEach(sprite => sprite.render(context));
   }
+
+  getIndexOf(item: DisplayObject) {
+    return this._items.indexOf(item);
+  }
 }
