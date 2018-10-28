@@ -31,6 +31,7 @@ export class Sprite extends DisplayObject {
     context.translate(-(this.x + this.width * this.anchorX), -(this.y + this.height * this.anchorY));
     context.translate(-this.width * this.originX, -this.height * this.originY);
     context.drawImage(this._texture.source, this.x, this.y, this.width, this.height);
+    context.strokeRect(this.x, this.y, this.width, this.height);
     context.globalAlpha = alpha;
     context.setTransform(1, 0, 0, 1, 0, 0);
   }

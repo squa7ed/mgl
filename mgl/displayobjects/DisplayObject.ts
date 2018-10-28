@@ -180,7 +180,7 @@ export abstract class DisplayObject extends EventEmitter {
   //#endregion
 
   //#region public methods
-  setOrigin(ox: number, oy: number) {
+  setOrigin(ox?: number, oy?: number) {
     if (ox === undefined) {
       ox = 0;
     }
@@ -193,7 +193,7 @@ export abstract class DisplayObject extends EventEmitter {
     return this;
   }
 
-  setScale(sx: number, sy: number) {
+  setScale(sx?: number, sy?: number) {
     if (sx === undefined) {
       sx = 1;
     }
@@ -206,7 +206,7 @@ export abstract class DisplayObject extends EventEmitter {
     return this;
   }
 
-  setAnchor(ax: number, ay: number) {
+  setAnchor(ax?: number, ay?: number) {
     if (ax === undefined) {
       ax = 0.5;
     }

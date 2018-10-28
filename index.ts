@@ -1,4 +1,4 @@
-import { Game, Scene, Text, DisplayObject } from "./mgl";
+import { Game, Scene, Sprite, Text } from "./mgl";
 
 const ROWS = 14;
 const COLUMNS = 14;
@@ -25,8 +25,9 @@ export class StartScene extends Scene {
   private isClickable: boolean;
   private gameWon: boolean;
 
-  private field: DisplayObject[][];
-  private buttons: DisplayObject[];
+  private field: Sprite[][];
+  private buttons: Sprite[];
+  private texts: Text[];
 
 
   // sprites
@@ -57,19 +58,20 @@ export class StartScene extends Scene {
     this.tileSize = this.textures.get('tile-0').width;
     this.fieldOffsetX = Math.round((this.stageWidth - this.tileSize * 14) / 2);
     this.fieldOffsetY = Math.round(this.stageHeight / 4);
-    this.movesX = Math.round(this.stageWidth / 8);
-    this.movesY = Math.round(this.stageHeight / 6);
-    this.moveLimitX = Math.round(this.stageWidth * 5 / 8);
-    this.movesLimitY = Math.round(this.stageHeight / 6);
+    this.movesX = Math.round(this.fieldOffsetX);
+    this.movesY = Math.round(this.stageHeight / 7);
+    this.moveLimitX = Math.round(this.fieldOffsetX + this.tileSize * COLUMNS);
+    this.movesLimitY = Math.round(this.stageHeight / 7);
 
     this._moves = 0;
     this.gameOver = false;
     this.isDone = false;
-    this.isClickable = true;
+    this.isClickable = false;
 
     this.createField();
     this.createButtons();
     this.createTexts();
+    this.reveal();
   }
 
   createField() {
@@ -79,10 +81,14 @@ export class StartScene extends Scene {
       this.field[r] = [];
       for (let c = 0; c < COLUMNS; c++) {
         index = Math.round(Math.random() * 1000) % COLORS;
-        let item = this.add.sprite(this.fieldOffsetX + c * this.tileSize, this.fieldOffsetY + r * this.tileSize, `tile-${index}`);
+        let x = this.fieldOffsetX + c * this.tileSize;
+        let y = this.fieldOffsetY + r * this.tileSize;
+        let item = this.add.sprite(x, y, `tile-${index}`);
         item.data.set('row', r);
         item.data.set('column', c);
         item.data.set('color', index);
+        item.data.set('x', x);
+        item.data.set('y', y);
         this.field[r][c] = item;
       }
     }
@@ -113,10 +119,68 @@ export class StartScene extends Scene {
   }
 
   createTexts() {
+    this.texts = [];
     // moves
-    this.textMoves = this.add.text(this.movesX, this.movesY, this.moves.toString(), { fontSize: 30 });
+    this.textMoves = this.add.text(this.movesX, this.movesY, this.moves.toString(), { fontSize: 30 }).setOrigin(0);
     // move limit
-    this.textMoveLimit = this.add.text(this.moveLimitX, this.movesLimitY, MOVE_LIMIT.toString(), { fontSize: 30 });
+    this.textMoveLimit = this.add.text(this.moveLimitX, this.movesLimitY, MOVE_LIMIT.toString(), { fontSize: 30 }).setOrigin(1, 0).setAnchor(-0.5, 0.5);
+    this.texts.push(this.textMoves, this.textMoveLimit);
+  }
+
+  reveal() {
+    let delay = 0;
+    // show color buttons
+    this.tweens.add({
+      target: this.buttons,
+      duration: 2250,
+      delay: delay,
+      props: {
+        scaleX: {
+          from: 0,
+          to: 1
+        },
+        scaleY: {
+          from: 0,
+          to: 1
+        }
+      }
+    });
+    // show tiles
+    for (let r = ROWS - 1; r >= 0; r--) {
+      for (let c = 0; c < COLUMNS; c++) {
+        let tile = this.field[r][c];
+        this.tweens.add({
+          target: tile,
+          duration: 300,
+          delay: delay,
+          props: {
+            y: {
+              from: -this.tileSize,
+              to: tile.data.get('y')
+            }
+          }
+        });
+        delay += 10;
+      }
+    }
+    // show texts
+    this.texts.forEach(text => this.tweens.add({
+      target: text,
+      duration: 2000,
+      // delay: delay,
+      props: {
+        // y: {
+        //   from: -text.height,
+        //   to: text.y
+        // },
+        rotation: {
+          from: 0,
+          to: 360
+        }
+      }
+    }));
+    delay += 300;
+    setTimeout(() => { this.isClickable = true; }, delay);
   }
 
   onButtonPressed(button) {

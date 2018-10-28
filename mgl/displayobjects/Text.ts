@@ -55,11 +55,14 @@ export class Text extends DisplayObject {
     context.globalAlpha = this.opacity;
     context.fillStyle = this.style.color;
     context.font = this.style.font;
+    context.textAlign = "left";
+    context.textBaseline = "top";
     context.translate(this.x + this.width * this.anchorX, this.y + this.height * this.anchorY);
     context.scale(this.scaleX, this.scaleY);
     context.rotate(this.rotation * Math.PI / 180);
     context.translate(-(this.x + this.width * this.anchorX), -(this.y + this.height * this.anchorY));
     context.translate(-this.width * this.originX, -this.height * this.originY);
+    context.strokeRect(this.x, this.y, this.width, this.height);
     context.fillText(this.text, this.x, this.y);
     context.setTransform(1, 0, 0, 1, 0, 0);
     context.globalAlpha = alpha;
