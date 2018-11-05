@@ -7,6 +7,7 @@ import { TextureManager } from "../textures/TextureManager";
 import { DisplayObjectFactory } from "../displayobjects/DisplayObjectFactory";
 import { Timer } from "../timers/Timer";
 import TweenManager from "../tween/TweenManager";
+import { SoundManager } from "../sound/SoundManager";
 
 export abstract class Scene {
   constructor(private _game: Game, private _key: string) {
@@ -16,10 +17,12 @@ export abstract class Scene {
     this._timer = new Timer(this);
     // this._textures = _game.textures;
     this._textures = _game.textures;
+    this._sound = _game.sound;
     this._add = new DisplayObjectFactory(this);
     this._input = new InputPlugin(this);
     this._tweens = new TweenManager(this);
     this._load = new Loader(this);
+    this._events.emit('boot');
   }
 
   private _displayList: DisplayList;
@@ -31,6 +34,8 @@ export abstract class Scene {
   private _timer: Timer;
 
   private _textures: TextureManager;
+
+  private _sound: SoundManager;
 
   private _load: Loader;
 
@@ -51,6 +56,8 @@ export abstract class Scene {
   get timer() { return this._timer; }
 
   get textures() { return this._textures; }
+
+  get sound() { return this._sound; }
 
   get tweens() { return this._tweens; }
 

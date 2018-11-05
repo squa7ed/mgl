@@ -2,6 +2,7 @@ import { EventEmitter } from './EventEmitter';
 import { InputManager } from './input/InputManager';
 import { TextureManager } from './textures/TextureManager';
 import { Scene } from './scene/Scene';
+import { SoundManager } from './sound/SoundManager';
 
 export class Game {
   constructor() {
@@ -18,6 +19,8 @@ export class Game {
     this.input = new InputManager(this);
 
     this.textures = new TextureManager(this);
+
+    this.sound = new SoundManager(this);
 
     this._lastUpdateTime = 0;
     this._deltaTime = 0;
@@ -44,6 +47,8 @@ export class Game {
   readonly input: InputManager;
 
   readonly textures: TextureManager;
+
+  readonly sound: SoundManager;
 
   setupCanvas(): HTMLCanvasElement {
     let canvas = document.createElement('canvas');

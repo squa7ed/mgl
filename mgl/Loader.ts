@@ -2,16 +2,19 @@ import { EventEmitter } from "./EventEmitter";
 import { Texture } from './textures/Texture';
 import { Scene } from "./scene/Scene";
 import { TextureManager } from "./textures/TextureManager";
+import { SoundManager } from "./sound/SoundManager";
+import { Sound } from "./sound/Sound";
 
 export class Loader extends EventEmitter {
   constructor(private _scene: Scene) {
     super();
-    this._textures = _scene.textures;
     this._pending = 0;
     _scene.events.once('boot', this.boot, this);
   }
 
-  private readonly _textures: TextureManager;
+  private _textures: TextureManager;
+
+  private _sounds: SoundManager;
 
   private _pending: number;
 
@@ -29,6 +32,8 @@ export class Loader extends EventEmitter {
   }
 
   boot(): void {
+    this._textures = this._scene.textures;
+    this._sounds = this._scene.sound;
     this.scene.events.once('exit', this.dispose, this);
   }
 
@@ -44,12 +49,30 @@ export class Loader extends EventEmitter {
     if (url === undefined) {
       return;
     }
+    console.info(`loading image ${key}`);
     this.pending++;
     let img = new Image();
     img.onload = () => {
       this._textures.add(key, new Texture(this._textures, key, img));
       this.pending--;
+      console.info(`image ${key} loaded`);
     };
     img.src = url;
+  }
+
+  sound(key: string, url: string): void {
+    if (url === undefined) {
+      return;
+    }
+    console.info(`loading sound ${key}`);
+    this.pending++;
+    let audio = new Audio();
+    audio.oncanplaythrough = () => {
+      this._sounds.add(key, new Sound(this._sounds, key, audio));
+      this.pending--;
+      audio.oncanplaythrough = null;
+      console.info(`sound ${key} loaded`);
+    };
+    audio.src = url;
   }
 }

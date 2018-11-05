@@ -45,6 +45,10 @@ export class StartScene extends Scene {
       this.load.image(`button-${i}`, `assets/button-${i}.png`);
       this.load.image(`tile-${i}`, `assets/tile-${i}.png`);
     }
+    this.load.sound('click-fail', 'assets/click-fail.mp3');
+    this.load.sound('click-success', 'assets/click-success.mp3');
+    this.load.sound('lose', 'assets/lose.mp3');
+    this.load.sound('win', 'assets/win.mp3');
   }
 
   onUpdate() {
@@ -184,11 +188,23 @@ export class StartScene extends Scene {
   }
 
   onButtonPressed(button) {
-    if (this.field[0][0].data.get('color') !== button.data.get('color') && this.isClickable) {
-      this.isClickable = false;
-      this.moves++;
-      this.flood(button.data.get('color'), 0, 0);
+    if (!this.isClickable) {
+      return;
     }
+    let oldColor = this.field[0][0].data.get('color');
+    let color = button.data.get('color');
+    if (oldColor === color) {
+      this.sound.play('click-fail');
+      return;
+    }
+    this.sound.play('click-success');
+    this.startFlood(color);
+  }
+
+  startFlood(color: string) {
+    this.isClickable = false;
+    this.moves++;
+    this.flood(color, 0, 0);
   }
 
   flood(color, row, column) {
@@ -235,15 +251,18 @@ export class StartScene extends Scene {
       // win
       this.gameOver = true;
       this.gameWon = true;
+      this.sound.play('win');
     } else if (!this.checkIsDone() && this.moves >= MOVE_LIMIT) {
       // lose
       this.gameOver = true;
       this.gameWon = false;
+      this.sound.play('lose');
     }
     if (this.gameOver) {
       this.moves = 100;
+    } else {
+      this.isClickable = true;
     }
-    this.isClickable = true;
   }
 
   checkIsDone() {
