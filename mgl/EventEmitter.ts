@@ -1,21 +1,21 @@
 export class EventEmitter {
   constructor() {
     this._events = new Map();
-    this.on = (event, callback, context) => this.addListener(event, callback, context, false);
+    this.on = (event: string, callback: Function, context?: any) => this.addListener(event, callback, context, false);
     this.off = this.removeListener;
-    this.once = (event, callback, context) => this.addListener(event, callback, context, true);
+    this.once = (event: string, callback: Function, context?: any) => this.addListener(event, callback, context, true);
     this.emit = this.invoke;
   }
 
   private _events: Map<string, Array<EventHandler>>;
 
-  readonly on: Function;
+  readonly on: (event: string, callback: Function, context?: any) => void;
 
-  readonly off: Function;
+  readonly off: (event: string, callback: Function) => void;
 
-  readonly once: Function;
+  readonly once: (event: string, callback: Function, context?: any) => void;
 
-  readonly emit: Function;
+  readonly emit: (event: string, ...params: any[]) => void;
 
   addListener(eventType: string, callback: Function, context?: any, once?: boolean): void {
     if (!this._events.has(eventType)) {
@@ -54,14 +54,14 @@ export class EventEmitter {
     }
   }
 
-  invoke(eventType: string): void {
+  invoke(eventType: string, ...params: any[]): void {
     if (!this._events.has(eventType)) {
       return;
     }
     let list = this._events.get(eventType);
     let pending = [];
     list.forEach(handler => {
-      handler.invoke(...[...arguments].slice(1));
+      handler.invoke(params);
       if (handler.once) {
         pending.push(handler);
       }
@@ -90,7 +90,7 @@ class EventHandler {
   get once() { return this._once; }
 
   invoke(...params: any[]): void {
-    this.callback.apply(this.context, params);
+    this.callback.apply(this.context, ...params);
   }
 
   dispose() {

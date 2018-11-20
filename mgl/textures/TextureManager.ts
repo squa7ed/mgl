@@ -6,9 +6,9 @@ export class TextureManager {
     this._textures = new Map<string, Texture>();
     this._game.events.once('boot', this.boot, this);
   }
-  
+
   private _textures: Map<string, Texture>;
- 
+
   boot() {
     this._game.events.once('exit', this.dispose, this);
   }
@@ -22,7 +22,7 @@ export class TextureManager {
     this._textures = undefined;
     this._game = undefined;
   }
-   
+
   get(key: string): Texture {
     return this._textures.get(key);
   }
@@ -32,7 +32,9 @@ export class TextureManager {
   }
 
   add(key: string, texture: Texture): TextureManager {
+    if (this.has(key)) {
+      return;
+    }
     this._textures.set(key, texture);
-    return this;
   }
 }

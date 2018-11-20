@@ -3,32 +3,35 @@ import { InputManager } from './input/InputManager';
 import { TextureManager } from './textures/TextureManager';
 import { Scene } from './scene/Scene';
 import { SoundManager } from './sound/SoundManager';
+import { SceneManager } from './scene/SceneManager';
+
+export type GameConfig = {
+  scenes: (new (game: Game) => Scene)[];
+}
 
 export class Game {
-  constructor() {
+  constructor(public readonly config: GameConfig) {
     this.events = new EventEmitter();
 
     this.canvas = this.setupCanvas();
 
     this._context = this.canvas.getContext('2d');
 
-    this._isStarted = false;
-
     this._bindLoop = this.loop.bind(this);
 
     this.input = new InputManager(this);
+
+    this.scene = new SceneManager(this);
 
     this.textures = new TextureManager(this);
 
     this.sound = new SoundManager(this);
 
     this._lastUpdateTime = 0;
-    this._deltaTime = 0;
 
     this.events.emit('boot');
+    this.start();
   }
-  
-  private _isStarted: boolean;
 
   private _bindLoop: FrameRequestCallback;
 
@@ -40,6 +43,8 @@ export class Game {
 
   private _context: CanvasRenderingContext2D;
 
+  get context() { return this._context; }
+
   readonly events: EventEmitter;
 
   readonly canvas: HTMLCanvasElement;
@@ -50,6 +55,8 @@ export class Game {
 
   readonly sound: SoundManager;
 
+  readonly scene: SceneManager;
+
   setupCanvas(): HTMLCanvasElement {
     let canvas = document.createElement('canvas');
     canvas.width = 320;
@@ -58,21 +65,8 @@ export class Game {
     return canvas;
   }
 
-  start(scene: Scene): void {
-    if (scene === undefined) {
-      return;
-    }
-    if (this._isStarted) {
-      return;
-    }
+  start(): void {
     this._lastUpdateTime = performance.now();
-    scene.onLoad();
-    if (scene.load.pending !== 0) {
-      scene.events.once('load', scene.onCreate, scene);
-    } else {
-      scene.onCreate();
-    }
-    this._currentScene = scene;
     this.startAnimation();
   }
 
@@ -82,7 +76,6 @@ export class Game {
 
   loop(): void {
     this.update();
-    this.render();
     this.startAnimation();
   }
 
@@ -90,12 +83,7 @@ export class Game {
     let now = performance.now();
     this._deltaTime = now - this._lastUpdateTime;
     this.input.update(now, this._deltaTime);
-    this._currentScene.update(now, this._deltaTime);
+    this.scene.update(now, this._deltaTime);
     this._lastUpdateTime = now;
-  }
-
-  render(): void {
-    this._context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this._currentScene.displayList.render(this._context);
   }
 }

@@ -27,7 +27,7 @@ export class Loader extends EventEmitter {
     }
     this._pending = value;
     if (this._pending === 0) {
-      this.scene.events.emit('load');
+      this.scene.events.emit('loaded', this.scene);
     }
   }
 

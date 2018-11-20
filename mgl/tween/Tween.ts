@@ -2,7 +2,7 @@ import { GetValue } from '../Utils';
 import TweenManager from './TweenManager';
 import { DisplayObject } from '../displayobjects/DisplayObject';
 
-export enum TweenState { PLAYING, FINISHED };
+export enum TweenState { PENDING, PLAYING, FINISHED };
 
 const Ease = {
   sine: progress => Math.sin(progress * Math.PI / 2),
@@ -39,7 +39,7 @@ export class Tween {
     this._elapsed = 0;
     this._totalElapsed = 0;
     this._totalDuration = this._calculateTotalDuration();
-    this._state = TweenState.PLAYING;
+    this._state = TweenState.PENDING;
     this._data = this._buildTweenData(config);
   }
 

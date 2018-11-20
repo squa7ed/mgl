@@ -17,7 +17,7 @@ export default class TweenManager {
   add(config: TweenConfig) {
     let tween = new Tween(this, config);
     this._pendingAdd.push(tween);
-    return tween;
+    return this;
   }
 
   update(time: number, dt: number) {

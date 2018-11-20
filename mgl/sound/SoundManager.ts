@@ -9,9 +9,8 @@ export class SoundManager {
   private _sounds: Map<string, Sound>;
 
   add(key: string, sound: Sound): void {
-    console.info(`adding sound ${key}`);
     if (this.has(key)) {
-      console.warn(`A sound with key ${key} already exists. Replacing...`);
+      return;
     }
     this._sounds.set(key, sound);
   }
@@ -25,7 +24,6 @@ export class SoundManager {
   }
 
   play(key: string): void {
-    console.info(`playing sound ${key}`);
     let sound = this.get(key);
     if (sound.isPlaying) {
       sound.stop();
@@ -34,7 +32,6 @@ export class SoundManager {
   }
 
   stop(key: string): void {
-    console.info(`stopping sound ${key}`);
     let sound = this._sounds.get(key);
     if (sound.isPlaying) {
       sound.stop();

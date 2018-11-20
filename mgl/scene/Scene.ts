@@ -8,9 +8,10 @@ import { DisplayObjectFactory } from "../displayobjects/DisplayObjectFactory";
 import { Timer } from "../timers/Timer";
 import TweenManager from "../tween/TweenManager";
 import { SoundManager } from "../sound/SoundManager";
+import { System } from "./System";
 
 export abstract class Scene {
-  constructor(private _game: Game, private _key: string) {
+  constructor(private _game: Game) {
     this._displayList = new DisplayList(this);
     this._events = new EventEmitter();
     // this._input = _game.input;
@@ -22,7 +23,7 @@ export abstract class Scene {
     this._input = new InputPlugin(this);
     this._tweens = new TweenManager(this);
     this._load = new Loader(this);
-    this._events.emit('boot');
+    this._sys = new System(this);
   }
 
   private _displayList: DisplayList;
@@ -43,9 +44,9 @@ export abstract class Scene {
 
   private _tweens: TweenManager;
 
-  get game() { return this._game; }
+  private _sys: System;
 
-  get key() { return this._key; }
+  get game() { return this._game; }
 
   get displayList() { return this._displayList; }
 
@@ -65,17 +66,13 @@ export abstract class Scene {
 
   get add() { return this._add; }
 
+  get sys() { return this._sys; }
+
+  abstract onInit(): void;
+
   abstract onLoad(): void;
 
   abstract onCreate(): void;
 
   abstract onUpdate(time: number, dt: number): void;
-
-  update(time: number, dt: number): void {
-    this.timer.update(time, dt);
-    this.input.update(time, dt);
-    this.tweens.update(time, dt);
-    this.onUpdate(time, dt);
-  }
-
 }
