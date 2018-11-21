@@ -36,7 +36,6 @@ export class System {
 export enum SceneStatus {
   PENDING,
   START,
-  INIT,
   LOAD,
   CREATE,
   RUNNING,

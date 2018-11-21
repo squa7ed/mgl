@@ -40,15 +40,6 @@ export default class GameScene extends Scene {
     this.textMoves.text = value.toString();
   }
 
-  onInit() {
-    this.stageWidth = this.game.canvas.width;
-    this.stageHeight = this.game.canvas.height;
-    this._moves = 0;
-    this.gameOver = false;
-    this.isDone = false;
-    this.isClickable = false;
-  }
-
   onLoad() {
     for (let i = 0; i < 6; i++) {
       this.load.image(`button-${i}`, `assets/button-${i}.png`);
@@ -61,6 +52,13 @@ export default class GameScene extends Scene {
   }
 
   onCreate() {
+    this.stageWidth = this.game.canvas.width;
+    this.stageHeight = this.game.canvas.height;
+    this._moves = 0;
+    this.gameOver = false;
+    this.isDone = false;
+    this.isClickable = false;
+
     this.tileSize = this.textures.get('tile-0').width;
     this.fieldOffsetX = Math.round((this.stageWidth - this.tileSize * 14) / 2);
     this.fieldOffsetY = Math.round(this.stageHeight / 4);

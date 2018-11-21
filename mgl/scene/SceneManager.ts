@@ -34,9 +34,6 @@ export class SceneManager {
       return;
     }
     scene.sys.status = SceneStatus.START;
-    // init
-    scene.sys.status = SceneStatus.INIT;
-    scene.onInit();
     // load
     scene.sys.status = SceneStatus.LOAD;
     scene.onLoad();

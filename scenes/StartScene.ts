@@ -10,15 +10,13 @@ export default class StartScene extends Scene {
 
   private textQuit: Text;
 
-  onInit(): void {
-    this.stageWidth = this.game.canvas.width;
-    this.stageHeight = this.game.canvas.height;
-  }
-
   onLoad(): void {
   }
-
+  
   onCreate(): void {
+    this.stageWidth = this.game.canvas.width;
+    this.stageHeight = this.game.canvas.height;
+
     this.textStart = this.add.text(this.stageWidth / 4, this.stageHeight / 2, 'Start', { fontSize: 16 }).setOrigin(0.5);
     this.input.enable(this.textStart);
     this.textStart.on('pointerDown', this.onStartButtonPressed, this);

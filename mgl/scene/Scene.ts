@@ -68,8 +68,6 @@ export abstract class Scene {
 
   get sys() { return this._sys; }
 
-  abstract onInit(): void;
-
   abstract onLoad(): void;
 
   abstract onCreate(): void;
