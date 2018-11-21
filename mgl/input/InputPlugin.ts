@@ -24,11 +24,14 @@ export class InputPlugin extends EventEmitter {
   update(time: number, dt: number): void {
     let manager = this._manager;
     let pointer = manager.pointer;
-    let list = this._getPointerOverItems(pointer);
-    let len = list.length;
-    if (len > 0) {
-      this._sortInteractiveObjects(list);
-      this._invokeEvents(list, pointer);
+    if (pointer.isActive) {
+      let list = this._getPointerOverItems(pointer);
+      let len = list.length;
+      if (len > 0) {
+        this._sortInteractiveObjects(list);
+        this._invokeEvents(list, pointer);
+        pointer.reset();
+      }
     }
   }
 
