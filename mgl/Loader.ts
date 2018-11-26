@@ -52,13 +52,13 @@ export class Loader extends EventEmitter {
     if (this._textures.has(key)) {
       return;
     }
-    console.info(`loading image ${key}`);
+    console.debug(`loading image ${key}`);
     let handler = (event: Event) => {
       let img = <HTMLImageElement>event.target;
       this._textures.add(key, new Texture(this._textures, key, img));
       img.removeEventListener('load', handler);
       this.pending--;
-      console.info(`image ${key} loaded`);
+      console.debug(`image ${key} loaded`);
     }
     this.pending++;
     let img = new Image();
@@ -73,14 +73,14 @@ export class Loader extends EventEmitter {
     if (this._sounds.has(key)) {
       return;
     }
-    console.info(`loading sound ${key}`);
+    console.debug(`loading sound ${key}`);
     this.pending++;
     let handler = (event: Event) => {
       let audio = <HTMLAudioElement>event.target;
       this._sounds.add(key, new Sound(this._sounds, key, audio));
       audio.removeEventListener('canplay', handler);
       this.pending--;
-      console.info(`sound ${key} loaded`);
+      console.debug(`sound ${key} loaded`);
     }
     let audio = new Audio();
     audio.addEventListener('canplay', handler, { once: true });

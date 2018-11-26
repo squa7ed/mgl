@@ -26,16 +26,14 @@ export class SceneManager {
     if (!Array.isArray(scenes)) {
       scenes = [scenes];
     }
-    scenes.forEach((ctor, i) => {
-      let scene = new ctor(this._game)
-      let key = ctor.name;
-      if (this._scenes.has(key)) {
-        throw Error(`duplicate scene ${key}`);
+    scenes.forEach((config) => {
+      if (this._scenes.has(config.key)) {
+        throw Error(`duplicate scene ${config.key}`);
       }
+      let scene = new config.ctor(this._game, config.key)
       scene.sys.boot();
-      this._scenes.set(key, scene);
+      this._scenes.set(config.key, scene);
     });
-    console.debug(this);
   }
 
   start(key: string) {

@@ -7,9 +7,12 @@ document.getElementById('container').appendChild(canvas);
 
 let config: GameConfig = {
   canvas: canvas,
-  scenes: [GameScene, StartScene],
-  width: 320,
-  height: 568,
+  scenes: [
+    { key: 'GameScene', ctor: GameScene },
+    { key: 'StartScene', ctor: StartScene }
+  ],
+  width: 375,
+  height: 667,
   background: '#ffffff'
 }
 

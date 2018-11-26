@@ -2,7 +2,7 @@ import { Scene } from "./Scene";
 import { DisplayList } from "../displayobjects/DisplayList";
 
 export class System {
-  constructor(private _scene: Scene) {
+  constructor(private _scene: Scene, public readonly key: string) {
   }
 
   public status: SceneStatus;

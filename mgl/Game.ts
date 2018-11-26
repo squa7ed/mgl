@@ -5,9 +5,11 @@ import { Scene } from './scene/Scene';
 import { SoundManager } from './sound/SoundManager';
 import { SceneManager } from './scene/SceneManager';
 
+type SceneConfig = { key: string, ctor: new (game: Game, key: string) => Scene };
+
 export type GameConfig = {
   canvas: HTMLCanvasElement,
-  scenes: (new (game: Game) => Scene)[];
+  scenes: SceneConfig[],
   height?: number,
   width?: number,
   background?: string

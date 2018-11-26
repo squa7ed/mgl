@@ -11,7 +11,7 @@ import { SoundManager } from "../sound/SoundManager";
 import { System } from "./System";
 
 export abstract class Scene {
-  constructor(private _game: Game) {
+  constructor(private _game: Game, key: string) {
     this._displayList = new DisplayList(this);
     this._events = new EventEmitter();
     this._timer = new Timer(this);
@@ -21,7 +21,7 @@ export abstract class Scene {
     this._input = new InputPlugin(this);
     this._tweens = new TweenManager(this);
     this._load = new Loader(this);
-    this._sys = new System(this);
+    this._sys = new System(this, key);
   }
 
   private _displayList: DisplayList;
