@@ -14,6 +14,7 @@ export class GameScene extends Scene {
   private buttonSize: number;
   private fieldOffsetX: number;
   private fieldOffsetY: number;
+  private buttonsOffsetY: number;
   private movesX: number;
   private movesY: number;
 
@@ -41,9 +42,10 @@ export class GameScene extends Scene {
   }
 
   onLoad() {
+    let size = this.game.canvas.width <= 320 ? 'small' : this.game.canvas.width <= 375 ? 'medium' : 'large';
     for (let i = 0; i < 6; i++) {
-      this.load.image(`button-${i}`, `assets/button-${i}.png`);
-      this.load.image(`tile-${i}`, `assets/tile-${i}.png`);
+      this.load.image(`button-${i}`, `assets/${size}/button-${i}.png`);
+      this.load.image(`tile-${i}`, `assets/${size}/tile-${i}.png`);
     }
     this.load.sound('click-fail', 'assets/click-fail.mp3');
     this.load.sound('click-success', 'assets/click-success.mp3');
@@ -61,10 +63,12 @@ export class GameScene extends Scene {
 
     this.tileSize = this.textures.get('tile-0').width;
     this.buttonSize = this.textures.get('button-0').width;
-    this.fieldOffsetX = Math.round((this.stageWidth - this.tileSize * 14) / 2);
-    this.fieldOffsetY = Math.round(this.stageHeight / 4);
+    this.buttonsOffsetY = Math.ceil(this.stageHeight - 2 * (this.buttonSize + this.tileSize)) - this.tileSize;
+    this.fieldOffsetX = Math.round((this.stageWidth - this.tileSize * COLUMNS) / 2);
+    this.fieldOffsetY = this.buttonsOffsetY - this.tileSize * ROWS;
     this.movesX = Math.round(this.stageWidth / 2);
-    this.movesY = Math.round(this.stageHeight / 7);
+    this.movesY = Math.round(this.fieldOffsetY / 2);
+    console.debug(this);
 
     this.createField();
     this.createButtons();
@@ -95,11 +99,11 @@ export class GameScene extends Scene {
   createButtons() {
     this.buttons = [];
     let fieldWidth = COLUMNS * this.tileSize;
-    let cnt = Math.floor((fieldWidth + this.buttonSize) / (this.buttonSize * 2));
+    let cnt = Math.floor((fieldWidth + this.buttonSize) / (this.buttonSize * 1.5));
     let gap = (fieldWidth - cnt * this.buttonSize) / (cnt - 1);
     for (let index = 0; index < COLORS; index++) {
       let x = (index % cnt) + 1 === cnt ? this.fieldOffsetX + fieldWidth - this.buttonSize : this.fieldOffsetX + (index % cnt) * (this.buttonSize + gap);
-      let y = this.fieldOffsetY + ROWS * this.tileSize + Math.floor(index / cnt) * (this.buttonSize + this.tileSize) + this.tileSize;
+      let y = this.buttonsOffsetY + Math.floor(index / cnt) * (this.buttonSize + this.tileSize) + this.tileSize;
       let button = this.add.sprite(x, y, `button-${index}`);
       button.data.set('color', index)
       button.setInteractive();

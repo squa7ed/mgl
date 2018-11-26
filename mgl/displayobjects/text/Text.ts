@@ -54,7 +54,7 @@ export class Text extends DisplayObject {
     context.rotate(this.rotation * Math.PI / 180);
     context.translate(-(this.x + this.width * this.anchorX), -(this.y + this.height * this.anchorY));
     context.translate(-this.width * this.originX, -this.height * this.originY);
-    context.strokeRect(this.x, this.y, this.width, this.height);
+    // context.strokeRect(this.x, this.y, this.width, this.height);
     context.fillText(this.text, this.x, this.y);
     context.setTransform(1, 0, 0, 1, 0, 0);
     context.globalAlpha = alpha;
