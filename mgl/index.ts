@@ -1,5 +1,5 @@
 export { Sprite } from './displayobjects/Sprite'
-export { Text } from './displayobjects/Text';
+export { Text } from './displayobjects/text/Text';
 export { Game } from './Game';
 export { GameConfig } from './Game';
 export { Scene } from './scene/Scene';

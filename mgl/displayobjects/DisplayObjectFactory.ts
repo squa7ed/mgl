@@ -1,5 +1,6 @@
 import { Sprite } from './Sprite';
-import { Text, TextStyleType } from './Text';
+import { Text } from './text/Text';
+import { TextStyleType } from './text/TextStyle';
 import { DisplayList } from './DisplayList';
 import { Scene } from '../scene/Scene';
 

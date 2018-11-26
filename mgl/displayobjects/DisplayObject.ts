@@ -231,14 +231,6 @@ export abstract class DisplayObject extends EventEmitter {
     return this;
   }
 
-  isMouseOver(x: number, y: number) {
-    return this.visible &&
-      x > this.displayX &&
-      x < this.displayX + this.displayWidth &&
-      y > this.displayY &&
-      y < this.displayY + this.displayHeight;
-  }
-
   dispose() {
     if (!this.scene) {
       return;

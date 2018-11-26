@@ -35,6 +35,9 @@ export class GameScene extends Scene {
   set moves(value) {
     this._moves = value;
     this.textMoves.text = value.toString();
+    if (value < 5) {
+      this.textMoves.style.color = '#ff0000';
+    }
   }
 
   onLoad() {

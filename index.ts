@@ -11,8 +11,8 @@ let config: GameConfig = {
     { key: 'GameScene', ctor: GameScene },
     { key: 'StartScene', ctor: StartScene }
   ],
-  width: 375,
-  height: 667,
+  width: 320,
+  height: 568,
   background: '#ffffff'
 }
 
