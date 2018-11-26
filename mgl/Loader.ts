@@ -49,14 +49,20 @@ export class Loader extends EventEmitter {
     if (url === undefined) {
       return;
     }
+    if (this._textures.has(key)) {
+      return;
+    }
     console.info(`loading image ${key}`);
-    this.pending++;
-    let img = new Image();
-    img.onload = () => {
+    let handler = (event: Event) => {
+      let img = <HTMLImageElement>event.target;
       this._textures.add(key, new Texture(this._textures, key, img));
+      img.removeEventListener('load', handler);
       this.pending--;
       console.info(`image ${key} loaded`);
-    };
+    }
+    this.pending++;
+    let img = new Image();
+    img.addEventListener('load', handler, { once: true });
     img.src = url;
   }
 
@@ -64,15 +70,20 @@ export class Loader extends EventEmitter {
     if (url === undefined) {
       return;
     }
+    if (this._sounds.has(key)) {
+      return;
+    }
     console.info(`loading sound ${key}`);
     this.pending++;
-    let audio = new Audio();
-    audio.oncanplaythrough = () => {
+    let handler = (event: Event) => {
+      let audio = <HTMLAudioElement>event.target;
       this._sounds.add(key, new Sound(this._sounds, key, audio));
+      audio.removeEventListener('canplay', handler);
       this.pending--;
-      audio.oncanplaythrough = null;
       console.info(`sound ${key} loaded`);
-    };
+    }
+    let audio = new Audio();
+    audio.addEventListener('canplay', handler, { once: true });
     audio.src = url;
   }
 }

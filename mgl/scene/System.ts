@@ -9,13 +9,10 @@ export class System {
 
   public isBooted: boolean;
 
-  private _context: CanvasRenderingContext2D;
-
   private _displayList: DisplayList;
 
   boot() {
     this.status = SceneStatus.PENDING;
-    this._context = this._scene.game.context;
     this._displayList = this._scene.displayList;
     this.isBooted = true;
     this._scene.events.emit('boot');
@@ -28,8 +25,8 @@ export class System {
     this._scene.onUpdate(time, dt);
   }
 
-  render() {
-    this._displayList.render(this._context);
+  render(context: CanvasRenderingContext2D) {
+    this._displayList.render(context);
   }
 }
 

@@ -4,15 +4,16 @@
     "target": "es6",
     "rootDir": ".",
     "declaration": true,
-    "declarationDir": "./dist/@types",
-    "outDir": "./dist",
+    "declarationDir": "./build/@types",
+    "outDir": "./build",
     "moduleResolution": "node"
   },
   "include": [
-    "./mgl"
+    "mgl",
+    "scenes"
   ],
   "exclude": [
-    "dist",
+    "build",
     "node_modules"
   ]
 }

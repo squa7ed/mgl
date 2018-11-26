@@ -2,15 +2,6 @@ import { SoundManager } from "./SoundManager";
 
 export class Sound {
   constructor(private _manager: SoundManager, private _key: string, private _soundSource: HTMLAudioElement) {
-    _soundSource.onplay = () => {
-      this._isPlaying = true;
-    }
-    _soundSource.onended = () => {
-      this._isPlaying = false;
-    }
-    _soundSource.onpause = () => {
-      this._isPlaying = false;
-    }
   }
 
   get key() { return this._key; }
@@ -22,11 +13,13 @@ export class Sound {
   stop(): void {
     this._soundSource.pause();
     this._soundSource.currentTime = 0;
+    this._isPlaying = false;
   }
 
   play(): void {
     this._soundSource.currentTime = 0;
     this._soundSource.play();
+    this._isPlaying = true;
   }
 
   dispose(): void {

@@ -1,6 +1,6 @@
-import { Scene, Text } from "../mgl";
+import { Scene, Text } from "../mgl/index";
 
-export default class StartScene extends Scene {
+export class StartScene extends Scene {
 
   private stageWidth: number;
 

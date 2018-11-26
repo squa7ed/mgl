@@ -1,9 +1,16 @@
 import { GameConfig, Game } from "./mgl";
 import { GameScene, StartScene } from "./scenes";
 
+let canvas = document.createElement('canvas');
+
+document.getElementById('container').appendChild(canvas);
 
 let config: GameConfig = {
-  scenes: [GameScene, StartScene]
+  canvas: canvas,
+  scenes: [GameScene, StartScene],
+  width: 320,
+  height: 568,
+  background: '#ffffff'
 }
 
 let game = new Game(config);

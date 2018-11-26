@@ -11,7 +11,17 @@ export class SceneManager {
 
   private _scenes: Map<string, Scene>;
 
+  private _renderWidth: number;
+  private _renderHeight: number;
+  private _renderBackground: string;
+  private _renderContext: CanvasRenderingContext2D;
+
   private boot() {
+    this._renderWidth = this._game.config.width ? this._game.config.width : this._game.canvas.width;
+    this._renderHeight = this._game.config.height ? this._game.config.height : this._game.canvas.height;
+    this._renderBackground = this._game.config.background ? this._game.config.background : "#ffffff";
+    this._renderContext = this._game.canvas.getContext('2d');
+
     let scenes = this._game.config.scenes;
     if (!Array.isArray(scenes)) {
       scenes = [scenes];
@@ -25,6 +35,7 @@ export class SceneManager {
       scene.sys.boot();
       this._scenes.set(key, scene);
     });
+    console.debug(this);
   }
 
   start(key: string) {
@@ -74,13 +85,14 @@ export class SceneManager {
 
   update(time, dt) {
     //TODO
-    this._game.context.clearRect(0, 0, 320, 568);
+    this._renderContext.fillStyle = this._renderBackground;
+    this._renderContext.fillRect(0, 0, this._renderWidth, this._renderHeight);
     this._scenes.forEach((scene, key) => {
       if (scene.sys.status >= SceneStatus.CREATE && scene.sys.status < SceneStatus.PAUSED) {
         scene.sys.update(time, dt);
       }
       if (scene.sys.status >= SceneStatus.CREATE && scene.sys.status < SceneStatus.STOP) {
-        scene.sys.render();
+        scene.sys.render(this._renderContext);
       }
     });
   }

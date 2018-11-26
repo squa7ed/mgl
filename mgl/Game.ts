@@ -6,16 +6,27 @@ import { SoundManager } from './sound/SoundManager';
 import { SceneManager } from './scene/SceneManager';
 
 export type GameConfig = {
+  canvas: HTMLCanvasElement,
   scenes: (new (game: Game) => Scene)[];
+  height?: number,
+  width?: number,
+  background?: string
 }
 
 export class Game {
   constructor(public readonly config: GameConfig) {
     this.events = new EventEmitter();
 
-    this.canvas = this.setupCanvas();
+    this.canvas = config.canvas;
 
-    this._context = this.canvas.getContext('2d');
+    if (config.width) {
+      this.canvas.width = config.width;
+    }
+    if (config.height) {
+      this.canvas.height = config.height;
+    }
+
+    this.context = this.canvas.getContext('2d');
 
     this._bindLoop = this.loop.bind(this);
 
@@ -41,9 +52,7 @@ export class Game {
 
   private _currentScene: Scene;
 
-  private _context: CanvasRenderingContext2D;
-
-  get context() { return this._context; }
+  readonly context: CanvasRenderingContext2D;
 
   readonly events: EventEmitter;
 
@@ -56,14 +65,6 @@ export class Game {
   readonly sound: SoundManager;
 
   readonly scene: SceneManager;
-
-  setupCanvas(): HTMLCanvasElement {
-    let canvas = document.createElement('canvas');
-    canvas.width = 320;
-    canvas.height = 568;
-    document.getElementById('container').appendChild(canvas);
-    return canvas;
-  }
 
   start(): void {
     this._lastUpdateTime = performance.now();

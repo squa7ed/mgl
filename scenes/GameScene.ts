@@ -1,22 +1,21 @@
-import { Scene, Sprite, Text } from "../mgl";
+import { Scene, Sprite, Text } from "../mgl/index";
 
 const ROWS = 14;
 const COLUMNS = 14;
 const COLORS = 6;
 const MOVE_LIMIT = 25;
 
-export default class GameScene extends Scene {
+export class GameScene extends Scene {
   // size and position values
   private stageWidth: number;
   private stageHeight: number;
 
   private tileSize: number;
+  private buttonSize: number;
   private fieldOffsetX: number;
   private fieldOffsetY: number;
   private movesX: number;
   private movesY: number;
-  private moveLimitX: number;
-  private movesLimitY: number;
 
   // game 
   private _moves: number;
@@ -27,12 +26,10 @@ export default class GameScene extends Scene {
 
   private field: Sprite[][];
   private buttons: Sprite[];
-  private texts: Text[];
 
 
   // sprites
   private textMoves: Text;
-  private textMoveLimit: Text;
 
   get moves() { return this._moves; }
   set moves(value) {
@@ -54,19 +51,18 @@ export default class GameScene extends Scene {
   onCreate() {
     this.stageWidth = this.game.canvas.width;
     this.stageHeight = this.game.canvas.height;
-    this._moves = 0;
+    this._moves = MOVE_LIMIT;
     this.gameOver = false;
     this.isDone = false;
     this.isClickable = false;
 
     this.tileSize = this.textures.get('tile-0').width;
+    this.buttonSize = this.textures.get('button-0').width;
     this.fieldOffsetX = Math.round((this.stageWidth - this.tileSize * 14) / 2);
     this.fieldOffsetY = Math.round(this.stageHeight / 4);
-    this.movesX = Math.round(this.fieldOffsetX);
+    this.movesX = Math.round(this.stageWidth / 2);
     this.movesY = Math.round(this.stageHeight / 7);
-    this.moveLimitX = Math.round(this.fieldOffsetX + this.tileSize * COLUMNS);
-    this.movesLimitY = Math.round(this.stageHeight / 7);
-    
+
     this.createField();
     this.createButtons();
     this.createTexts();
@@ -95,22 +91,14 @@ export default class GameScene extends Scene {
 
   createButtons() {
     this.buttons = [];
-    // color buttons
-    for (let index = 0; index < 3; index++) {
-      let button = this.add.sprite(
-        (this.stageWidth / 8) + (this.stageWidth / 4) * index,
-        this.stageHeight * 12 / 16,
-        `button-${index}`);
-      button.data.set('color', index);
-      button.setInteractive();
-      this.buttons.push(button);
-    }
-    for (let index = 3; index < 6; index++) {
-      let button = this.add.sprite(
-        (this.stageWidth / 8) + (this.stageWidth / 4) * (index - 3),
-        this.stageHeight * 14 / 16,
-        `button-${index}`);
-      button.data.set('color', index);
+    let fieldWidth = COLUMNS * this.tileSize;
+    let cnt = Math.floor((fieldWidth + this.buttonSize) / (this.buttonSize * 2));
+    let gap = (fieldWidth - cnt * this.buttonSize) / (cnt - 1);
+    for (let index = 0; index < COLORS; index++) {
+      let x = (index % cnt) + 1 === cnt ? this.fieldOffsetX + fieldWidth - this.buttonSize : this.fieldOffsetX + (index % cnt) * (this.buttonSize + gap);
+      let y = this.fieldOffsetY + ROWS * this.tileSize + Math.floor(index / cnt) * (this.buttonSize + this.tileSize) + this.tileSize;
+      let button = this.add.sprite(x, y, `button-${index}`);
+      button.data.set('color', index)
       button.setInteractive();
       this.buttons.push(button);
     }
@@ -118,12 +106,7 @@ export default class GameScene extends Scene {
   }
 
   createTexts() {
-    this.texts = [];
-    // moves
-    this.textMoves = this.add.text(this.movesX, this.movesY, this.moves.toString(), { fontSize: 30 }).setOrigin(0);
-    // move limit
-    this.textMoveLimit = this.add.text(this.moveLimitX, this.movesLimitY, MOVE_LIMIT.toString(), { fontSize: 30 }).setOrigin(1, 0).setAnchor(-0.5, 0.5);
-    this.texts.push(this.textMoves, this.textMoveLimit);
+    this.textMoves = this.add.text(this.movesX, this.movesY, this.moves.toString(), { fontSize: 36 }).setOrigin(0.5).setAnchor(0);
   }
 
   reveal() {
@@ -163,8 +146,8 @@ export default class GameScene extends Scene {
       }
     }
     // show texts
-    this.texts.forEach(text => this.tweens.add({
-      target: text,
+    this.tweens.add({
+      target: this.textMoves,
       duration: 2000,
       // delay: delay,
       props: {
@@ -177,7 +160,7 @@ export default class GameScene extends Scene {
           to: 360
         }
       }
-    }));
+    });
     delay += 300;
     setTimeout(() => { this.isClickable = true; }, delay);
   }
@@ -198,7 +181,7 @@ export default class GameScene extends Scene {
 
   startFlood(color: string) {
     this.isClickable = false;
-    this.moves++;
+    this.moves--;
     this.flood(color, 0, 0);
   }
 
@@ -242,19 +225,19 @@ export default class GameScene extends Scene {
   }
 
   checkGameOver() {
-    if (this.checkIsDone() && this.moves <= MOVE_LIMIT) {
+    if (this.checkIsDone() && this.moves >= 0) {
       // win
       this.gameOver = true;
       this.gameWon = true;
       this.sound.play('win');
-    } else if (!this.checkIsDone() && this.moves >= MOVE_LIMIT) {
+    } else if (!this.checkIsDone() && this.moves <= 0) {
       // lose
       this.gameOver = true;
       this.gameWon = false;
       this.sound.play('lose');
     }
     if (this.gameOver) {
-      this.moves = 100;
+      this.textMoves.text = this.gameWon ? 'You Win!' : 'You lose!';
     } else {
       this.isClickable = true;
     }

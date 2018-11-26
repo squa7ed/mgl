@@ -14,9 +14,7 @@ export abstract class Scene {
   constructor(private _game: Game) {
     this._displayList = new DisplayList(this);
     this._events = new EventEmitter();
-    // this._input = _game.input;
     this._timer = new Timer(this);
-    // this._textures = _game.textures;
     this._textures = _game.textures;
     this._sound = _game.sound;
     this._add = new DisplayObjectFactory(this);
