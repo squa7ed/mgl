@@ -62,4 +62,9 @@ export class Text extends DisplayObject {
     context.font = font;
   }
 
+  dispose(): void {
+    this._style.dispose();
+    super.dispose();
+  }
+
 }

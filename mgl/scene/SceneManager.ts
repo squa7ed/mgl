@@ -1,8 +1,9 @@
 import { Game } from "../Game";
 import { Scene } from "./Scene";
 import { SceneStatus, System } from "./System";
+import { IDisposable } from "../Utils";
 
-export class SceneManager {
+export class SceneManager implements IDisposable {
   constructor(private _game: Game) {
     this._scenes = new Map();
     _game.events.once('boot', this.boot, this);
@@ -87,11 +88,11 @@ export class SceneManager {
     });
   }
 
-  dispose() {
+  dispose(): void {
     if (this._game === undefined) {
       return;
     }
-    this._scenes.forEach(scene => scene.events.emit('dispose'));
+    this._scenes.forEach(scene => scene.sys.dispose());
     this._scenes.clear();
     this._scenes = undefined;
     this._game = undefined;

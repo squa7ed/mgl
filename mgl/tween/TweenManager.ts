@@ -38,8 +38,19 @@ export default class TweenManager {
   }
 
   clear(): void {
-    this._pendingAdd.length = 0;
-    this._pendingRemove.length = 0;
-    this._tweens.length = 0;
+    this._pendingAdd.splice(0).forEach(item => item.dispose());
+    this._pendingRemove.splice(0).forEach(item => item.dispose());
+    this._tweens.splice(0).forEach(item => item.dispose());
+  }
+
+  dispose(): any {
+    if (!this._scene) {
+      return;
+    }
+    this.clear();
+    this._pendingAdd = undefined;
+    this._pendingRemove = undefined;
+    this._tweens = undefined;
+    this._scene = undefined;
   }
 }

@@ -2,8 +2,9 @@ import { EventEmitter } from "../EventEmitter";
 import { InputManager } from "../input/InputManager";
 import { Scene } from "../scene/Scene";
 import { InteractiveObject } from "../input/InteractiveObject";
+import { IDisposable } from "../Utils";
 
-export abstract class DisplayObject extends EventEmitter {
+export abstract class DisplayObject extends EventEmitter implements IDisposable {
   constructor(private _scene: Scene) {
     super();
     this._scene = _scene;
@@ -231,9 +232,12 @@ export abstract class DisplayObject extends EventEmitter {
     return this;
   }
 
-  dispose() {
+  dispose(): void {
     if (!this.scene) {
       return;
+    }
+    if (this.input) {
+      this.input.disable();
     }
     this.data.clear();
     this._data = undefined;

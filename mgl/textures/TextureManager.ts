@@ -1,7 +1,8 @@
 import { Game } from "../Game";
 import { Texture } from "./Texture";
+import { IDisposable } from "../Utils";
 
-export class TextureManager {
+export class TextureManager implements IDisposable {
   constructor(private _game: Game) {
     this._textures = new Map<string, Texture>();
     this._game.events.once('boot', this.boot, this);

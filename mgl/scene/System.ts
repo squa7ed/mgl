@@ -1,7 +1,8 @@
 import { Scene } from "./Scene";
 import { DisplayList } from "../displayobjects/DisplayList";
+import { IDisposable } from "../Utils";
 
-export class System {
+export class System implements IDisposable {
   constructor(private _scene: Scene, public readonly key: string) {
   }
 
@@ -42,7 +43,6 @@ export class System {
 
   stop(): void {
     this._displayList.clear();
-    this._scene.events.removeAllListeners();
     this._scene.timer.clear();
     this._scene.input.clear();
     this._scene.tweens.clear();
@@ -59,6 +59,17 @@ export class System {
 
   render(context: CanvasRenderingContext2D) {
     this._displayList.render(context);
+  }
+
+  dispose(): void {
+    this._displayList.dispose();
+    this._scene.timer.dispose();
+    this._scene.input.dispose();
+    this._scene.tweens.dispose();
+    this._scene.events.emit('dispose', this._scene);
+    this._scene.events.removeAllListeners();
+    this._displayList = undefined;
+    this._scene = undefined;
   }
 }
 

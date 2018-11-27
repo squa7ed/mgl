@@ -1,4 +1,4 @@
-import { GetValue } from "../../Utils";
+import { GetValue, IDisposable } from "../../Utils";
 import { Text } from "./Text";
 import { EventEmitter } from "../../EventEmitter";
 /**
@@ -14,7 +14,7 @@ export type TextStyleType = {
 };
 
 
-export class TextStyle extends EventEmitter {
+export class TextStyle extends EventEmitter implements IDisposable {
   constructor(private _text: Text, style: TextStyleType) {
     super();
     this._color = GetValue(style, 'color', '#000000');
@@ -105,4 +105,8 @@ export class TextStyle extends EventEmitter {
   }
 
   get font() { return this._font; }
+
+  dispose(): void {
+    this._text = undefined;
+  }
 }

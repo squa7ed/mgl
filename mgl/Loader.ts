@@ -1,13 +1,12 @@
-import { EventEmitter } from "./EventEmitter";
 import { Texture } from './textures/Texture';
 import { Scene } from "./scene/Scene";
 import { TextureManager } from "./textures/TextureManager";
 import { SoundManager } from "./sound/SoundManager";
 import { Sound } from "./sound/Sound";
+import { IDisposable } from "./Utils";
 
-export class Loader extends EventEmitter {
+export class Loader implements IDisposable {
   constructor(private _scene: Scene) {
-    super();
     this._pending = 0;
     _scene.events.once('boot', this.boot, this);
   }
@@ -42,7 +41,6 @@ export class Loader extends EventEmitter {
       return;
     }
     this._scene = undefined;
-    this.removeAllListeners();
   }
 
   image(key: string, url: string): void {

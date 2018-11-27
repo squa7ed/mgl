@@ -1,9 +1,11 @@
 import { DisplayObject } from './DisplayObject';
 import { Scene } from '../scene/Scene';
+import { IDisposable } from '../Utils';
 
-export class DisplayList {
-  constructor(public readonly scene: Scene) {
+export class DisplayList implements IDisposable {
+  constructor(private _scene: Scene) {
     this._items = [];
+    _scene.events.once('dispose', this.dispose, this);
   }
 
   private _items: DisplayObject[];
@@ -23,6 +25,17 @@ export class DisplayList {
   }
 
   clear(): void {
+    this._items.forEach(item => {
+      item.dispose();
+    });
     this._items.length = 0;
+  }
+
+  dispose(): void {
+    if (!this._scene) {
+      return;
+    }
+    this.clear();
+    this._scene = undefined;
   }
 }

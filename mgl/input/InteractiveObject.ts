@@ -1,8 +1,9 @@
 import { InputPlugin } from "./InputPlugin";
 import { DisplayObject } from "../displayobjects/DisplayObject";
 import { Pointer } from "./Pointer";
+import { IDisposable } from "../Utils";
 
-export class InteractiveObject {
+export class InteractiveObject implements IDisposable {
   constructor(private _manager: InputPlugin, private _target: DisplayObject) {
     this._isEnabled = false;
   }
@@ -37,6 +38,12 @@ export class InteractiveObject {
       pointer.x < this.target.displayX + this.target.displayWidth &&
       pointer.y > this.target.displayY &&
       pointer.y < this.target.displayY + this.target.displayHeight;
+  }
+
+  dispose(): void {
+    this.disable();
+    this._manager = undefined;
+    this._target = undefined;
   }
 
 }

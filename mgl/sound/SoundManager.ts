@@ -1,7 +1,8 @@
 import { Game } from "../Game";
 import { Sound } from "./Sound";
+import { IDisposable } from "../Utils";
 
-export class SoundManager {
+export class SoundManager implements IDisposable {
   constructor(private _game: Game) {
     this._sounds = new Map();
   }
@@ -38,7 +39,7 @@ export class SoundManager {
     }
   }
 
-  dispose() {
+  dispose(): void {
     this._sounds.forEach(sound => sound.dispose());
     this._sounds.clear();
     this._sounds = undefined;

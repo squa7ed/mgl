@@ -1,4 +1,4 @@
-import { GetValue } from '../Utils';
+import { GetValue, IDisposable } from '../Utils';
 import TweenManager from './TweenManager';
 import { DisplayObject } from '../displayobjects/DisplayObject';
 
@@ -26,7 +26,7 @@ type TweenData = {
   to: number;
 }
 
-export class Tween {
+export class Tween implements IDisposable {
   constructor(private _manager: TweenManager, config: TweenConfig) {
     // tween props
     this._duration = GetValue(config, 'duration', 500);
@@ -112,5 +112,11 @@ export class Tween {
       });
     });
     return data;
+  }
+
+  dispose(): void {
+    this._data.splice(0).forEach(item => item.target = undefined);
+    this._data = undefined;
+    this._manager = undefined;
   }
 }

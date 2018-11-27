@@ -12,8 +12,8 @@ import { System } from "./System";
 
 export abstract class Scene {
   constructor(private _game: Game, key: string) {
-    this._displayList = new DisplayList(this);
     this._events = new EventEmitter();
+    this._displayList = new DisplayList(this);
     this._timer = new Timer(this);
     this._textures = _game.textures;
     this._sound = _game.sound;

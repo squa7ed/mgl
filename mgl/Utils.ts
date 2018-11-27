@@ -27,3 +27,7 @@ export function GetValue(obj: any, key: string, defaultValue: any) {
   }
   return defaultValue;
 }
+
+export interface IDisposable {
+  dispose(): void;
+}

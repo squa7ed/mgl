@@ -4,22 +4,19 @@ import { Scene } from '../scene/Scene';
 import { InputManager } from './InputManager';
 import { DisplayObject } from '../displayobjects/DisplayObject';
 import { Point, Pointer } from './Pointer';
+import { IDisposable } from '../Utils';
 
-export class InputPlugin extends EventEmitter {
+export class InputPlugin extends EventEmitter implements IDisposable {
   constructor(private _scene: Scene) {
     super();
     this._manager = _scene.game.input;
     this._items = [];
+    _scene.events.once('dispose', this.dispose, this);
   }
 
   private _manager: InputManager;
 
   private _items: InteractiveObject[];
-
-  dispose(): void {
-    this._items.splice(0).forEach(item => item.disable());
-    this._scene = undefined;
-  }
 
   update(time: number, dt: number): void {
     let manager = this._manager;
@@ -104,7 +101,12 @@ export class InputPlugin extends EventEmitter {
   }
 
   clear(): void {
-    this._items.forEach(item => item.disable());
-    this._items.length = 0;
+    this._items.splice(0).forEach(item => item.disable());
+  }
+
+  dispose(): void {
+    this._items.splice(0).forEach(item => item.dispose());
+    this._manager = undefined;
+    this._scene = undefined;
   }
 }

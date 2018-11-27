@@ -35,4 +35,9 @@ export class Sprite extends DisplayObject {
     context.globalAlpha = alpha;
     context.setTransform(1, 0, 0, 1, 0, 0);
   }
+
+  dispose(): void {
+    this._texture = undefined;
+    super.dispose();
+  }
 }

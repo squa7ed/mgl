@@ -3,10 +3,12 @@ import { Text } from './text/Text';
 import { TextStyleType } from './text/TextStyle';
 import { DisplayList } from './DisplayList';
 import { Scene } from '../scene/Scene';
+import { IDisposable } from '../Utils';
 
-export class DisplayObjectFactory {
+export class DisplayObjectFactory implements IDisposable {
   constructor(private _scene: Scene) {
     _scene.events.once('boot', this.boot, this);
+    _scene.events.once('dispose', this.dispose, this);
   }
 
   private _items: DisplayList;
@@ -25,5 +27,13 @@ export class DisplayObjectFactory {
     let item = new Text(this._scene, x, y, text, style);
     this._items.add(item);
     return item;
+  }
+
+  dispose(): void {
+    if (!this._scene) {
+      return;
+    }
+    this._items = undefined;
+    this._scene = undefined;
   }
 }

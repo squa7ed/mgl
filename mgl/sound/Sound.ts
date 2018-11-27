@@ -1,6 +1,7 @@
 import { SoundManager } from "./SoundManager";
+import { IDisposable } from "../Utils";
 
-export class Sound {
+export class Sound implements IDisposable {
   constructor(private _manager: SoundManager, private _key: string, private _soundSource: HTMLAudioElement) {
   }
 

@@ -1,6 +1,7 @@
 import { InputManager } from "./InputManager";
+import { IDisposable } from "../Utils";
 
-export class MouseManager {
+export class MouseManager implements IDisposable {
   constructor(private _manager: InputManager) {
     this._target = undefined;
     this._handler = undefined;

@@ -2,6 +2,7 @@ import { MouseManager } from './MouseManager';
 import { Pointer, Point } from './Pointer';
 import { TouchManager } from './TouchManager';
 import { Game } from '../Game';
+import { IDisposable } from '../Utils';
 
 let eventTypes = {
   mousedown: 0,
@@ -12,7 +13,7 @@ let eventTypes = {
   touchend: 5
 };
 
-export class InputManager {
+export class InputManager implements IDisposable {
   constructor(private _game: Game) {
     this._touch = new TouchManager(this);
     this._mouse = new MouseManager(this);
@@ -90,10 +91,15 @@ export class InputManager {
   }
 
   dispose(): void {
+    if (!this._game) {
+      return;
+    }
     this._touch.dispose();
     this._mouse.dispose();
+    this._pointer.dispose();
     this._touch = undefined;
     this._mouse = undefined;
+    this._pointer = undefined;
     this._game = undefined;
   }
 

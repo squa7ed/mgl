@@ -1,11 +1,12 @@
 import { InputManager } from "./InputManager";
+import { IDisposable } from "../Utils";
 
 export type Point = {
   x: number;
   y: number;
 }
 
-export class Pointer {
+export class Pointer implements IDisposable {
   constructor(private _manager: InputManager) {
     this._position = { x: 0, y: 0 };
     this.reset();
@@ -99,5 +100,10 @@ export class Pointer {
   private _setPosition(x: number, y: number) {
     this._position.x = x;
     this._position.y = y;
+  }
+
+  dispose(): void {
+    this.reset();
+    this._manager = undefined;
   }
 }

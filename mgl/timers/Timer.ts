@@ -1,7 +1,7 @@
-import { GetValue } from '../Utils';
+import { GetValue, IDisposable } from '../Utils';
 import { Scene } from "../scene/Scene";
 
-export class Timer {
+export class Timer implements IDisposable {
   constructor(private _scene: Scene) {
     this._pendingAdd = [];
     this._pendingRemove = [];
@@ -44,9 +44,17 @@ export class Timer {
   }
 
   clear(): void {
-    this._pendingAdd.length= 0;
-    this._pendingRemove.length= 0;
+    this._pendingAdd.length = 0;
+    this._pendingRemove.length = 0;
     this._timerEvents.length = 0;
+  }
+
+  dispose(): void {
+    this._pendingAdd.forEach(item => item.dispose());
+    this._pendingRemove.forEach(item => item.dispose());
+    this._timerEvents.forEach(item => item.dispose());
+    this.clear();
+    this._scene = undefined;
   }
 }
 
