@@ -244,7 +244,11 @@ export class GameScene extends Scene {
       this.sound.play('lose');
     }
     if (this.gameOver) {
-      this.textMoves.text = this.gameWon ? 'You Win!' : 'You lose!';
+      this.textMoves.style.fontSize = 16;
+      this.textMoves.text = this.gameWon ? '胜利！' : '失败！';
+      this.textMoves.text += '点击以重新开始。';
+      this.textMoves.setInteractive();
+      this.textMoves.once('pointerDown', () => this.game.scene.start('GameScene'), this);
     } else {
       this.isClickable = true;
     }

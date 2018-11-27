@@ -1,6 +1,6 @@
 import { Game } from "../Game";
 import { Scene } from "./Scene";
-import { SceneStatus } from "./System";
+import { SceneStatus, System } from "./System";
 
 export class SceneManager {
   constructor(private _game: Game) {
@@ -42,23 +42,11 @@ export class SceneManager {
       console.warn(`A scene with key ${key} doesn't exist`);
       return;
     }
-    scene.sys.status = SceneStatus.START;
-    // load
-    scene.sys.status = SceneStatus.LOAD;
-    scene.onLoad();
-    if (scene.load.pending > 0) {
-      scene.events.once('loaded',
-        // create
-        (s: Scene) => {
-          s.sys.status = SceneStatus.CREATE;
-          s.onCreate();
-          s.sys.status = SceneStatus.RUNNING;
-        }, scene);
-    } else {
-      scene.sys.status = SceneStatus.CREATE;
-      scene.onCreate();
-      scene.sys.status = SceneStatus.RUNNING;
+    // stop the scene if it is running or paused
+    if (scene.sys.status === SceneStatus.RUNNING) {
+      scene.sys.stop();
     }
+    scene.sys.start();
   }
 
   stop(key) {
@@ -67,8 +55,10 @@ export class SceneManager {
       console.warn(`A scene with key ${key} doesn't exist`);
       return;
     }
-    scene.events.emit('stop');
-    scene.sys.status = SceneStatus.STOP;
+    if (scene.sys.status === SceneStatus.PENDING) {
+      return;
+    }
+    scene.sys.stop();
   }
 
   pause(key) {
@@ -77,8 +67,10 @@ export class SceneManager {
       console.warn(`A scene with key ${key} doesn't exist`);
       return;
     }
-    scene.events.emit('pause');
-    scene.sys.status = SceneStatus.PAUSED;
+    if (scene.sys.status !== SceneStatus.RUNNING) {
+      return;
+    }
+    scene.sys.pause();
   }
 
   update(time, dt) {
@@ -86,10 +78,10 @@ export class SceneManager {
     this._renderContext.fillStyle = this._renderBackground;
     this._renderContext.fillRect(0, 0, this._renderWidth, this._renderHeight);
     this._scenes.forEach((scene, key) => {
-      if (scene.sys.status >= SceneStatus.CREATE && scene.sys.status < SceneStatus.PAUSED) {
+      if (scene.sys.status === SceneStatus.RUNNING) {
         scene.sys.update(time, dt);
       }
-      if (scene.sys.status >= SceneStatus.CREATE && scene.sys.status < SceneStatus.STOP) {
+      if (scene.sys.status !== SceneStatus.PENDING) {
         scene.sys.render(this._renderContext);
       }
     });

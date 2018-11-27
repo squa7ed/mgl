@@ -42,6 +42,12 @@ export class Timer {
       }
     })
   }
+
+  clear(): void {
+    this._pendingAdd.length= 0;
+    this._pendingRemove.length= 0;
+    this._timerEvents.length = 0;
+  }
 }
 
 type TimerEventConfig = {

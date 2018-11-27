@@ -36,4 +36,10 @@ export default class TweenManager {
       tween.update(time, dt);
     });
   }
+
+  clear(): void {
+    this._pendingAdd.length = 0;
+    this._pendingRemove.length = 0;
+    this._tweens.length = 0;
+  }
 }

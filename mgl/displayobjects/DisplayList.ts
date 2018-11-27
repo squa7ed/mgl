@@ -21,4 +21,8 @@ export class DisplayList {
   getIndexOf(item: DisplayObject) {
     return this._items.indexOf(item);
   }
+
+  clear(): void {
+    this._items.length = 0;
+  }
 }
