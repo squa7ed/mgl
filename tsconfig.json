@@ -2,15 +2,13 @@
   "compilerOptions": {
     "module": "es6",
     "target": "es6",
-    "rootDir": ".",
     "declaration": true,
     "declarationDir": "./build/@types",
     "outDir": "./build",
     "moduleResolution": "node"
   },
   "include": [
-    "mgl",
-    "scenes"
+    "src"
   ],
   "exclude": [
     "build",
