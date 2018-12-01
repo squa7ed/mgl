@@ -3,20 +3,20 @@ import { Scene } from "../scene/Scene";
 import { Texture } from "../textures/Texture";
 
 export class Sprite extends DisplayObject {
-  constructor(scene: Scene, x: number, y: number, private _textureKey: string) {
+  constructor(scene: Scene, x: number, y: number, _textureKey: string, width?: number, height?: number) {
     super(scene);
     this.x = x || 0;
     this.y = y || 0;
-    this.setTexture(_textureKey);
+    this.setTexture(_textureKey, width, height);
   }
 
   private _texture: Texture;
 
-  setTexture(key: string): void {
+  setTexture(key: string, width?: number, height?: number): void {
     this._texture = this.scene.textures.get(key);
     // size
-    this.width = this._texture.width || 0;
-    this.height = this._texture.height || 0;
+    this.width = width || this._texture.width || 0;
+    this.height = height || this._texture.height || 0;
   }
 
   render(context: CanvasRenderingContext2D): void {

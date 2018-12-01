@@ -8,17 +8,21 @@ export class System implements IDisposable {
 
   private _status: SceneStatus;
 
+  public data: any;
+
   get status() { return this._status; }
 
   private _displayList: DisplayList;
 
-  boot() {
+  init(data?: any) {
     this._status = SceneStatus.PENDING;
     this._displayList = this._scene.displayList;
+    this.data = data;
     this._scene.events.emit('boot');
   }
 
-  start(): void {
+  start(data?: any): void {
+    this.data = data;
     // load
     this._scene.onLoad();
     if (this._scene.load.pending > 0) {
@@ -48,6 +52,11 @@ export class System implements IDisposable {
     this._scene.tweens.clear();
     this._scene.events.emit('stop', this._scene);
     this._status = SceneStatus.PENDING;
+  }
+
+  resume(): void {
+    this._scene.events.emit('resume', this._scene);
+    this._status = SceneStatus.RUNNING;
   }
 
   update(time: number, dt: number): void {

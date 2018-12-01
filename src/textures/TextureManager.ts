@@ -11,7 +11,7 @@ export class TextureManager implements IDisposable {
   private _textures: Map<string, Texture>;
 
   boot() {
-    this._game.events.once('exit', this.dispose, this);
+    this._game.events.once('dispose', this.dispose, this);
   }
 
   dispose(): void {

@@ -22,7 +22,7 @@ export class InputManager implements IDisposable {
     this._pendingAdd = [];
     this._eventQueue = [];
     _game.events.once('boot', this.boot, this);
-    _game.events.once('exit', this.dispose, this);
+    _game.events.once('dispose', this.dispose, this);
   }
 
   private _touch: TouchManager;
@@ -54,12 +54,12 @@ export class InputManager implements IDisposable {
   }
 
   update(time: number, dt: number): void {
+    this._pointer.reset();
     this._processEventQueue();
     if (this._eventQueue.length === 0) {
       return;
     }
     let queue = this._eventQueue.splice(0);
-    this._pointer.reset();
     queue.forEach(event => {
       switch (eventTypes[event.type]) {
         case eventTypes.mousedown:

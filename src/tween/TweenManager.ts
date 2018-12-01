@@ -26,7 +26,7 @@ export default class TweenManager {
     this._pendingRemove.forEach(tween => {
       let index = list.indexOf(tween);
       if (index !== -1) {
-        list.splice(index, 1);
+        list.splice(index, 1)[0].dispose();
       }
     });
     this._pendingRemove.length = 0;

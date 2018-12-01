@@ -9,6 +9,7 @@ import { Timer } from "../timers/Timer";
 import TweenManager from "../tween/TweenManager";
 import { SoundManager } from "../sound/SoundManager";
 import { System } from "./System";
+import { ScenePlugin } from "./ScenePlugin";
 
 export abstract class Scene {
   constructor(private _game: Game, key: string) {
@@ -22,6 +23,7 @@ export abstract class Scene {
     this._tweens = new TweenManager(this);
     this._load = new Loader(this);
     this._sys = new System(this, key);
+    this._scene = new ScenePlugin(this);
   }
 
   private _displayList: DisplayList;
@@ -44,6 +46,8 @@ export abstract class Scene {
 
   private _sys: System;
 
+  private _scene: ScenePlugin;
+
   get game() { return this._game; }
 
   get displayList() { return this._displayList; }
@@ -65,6 +69,8 @@ export abstract class Scene {
   get add() { return this._add; }
 
   get sys() { return this._sys; }
+
+  get scene() { return this._scene; }
 
   abstract onLoad(): void;
 

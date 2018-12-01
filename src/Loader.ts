@@ -33,7 +33,7 @@ export class Loader implements IDisposable {
   boot(): void {
     this._textures = this._scene.textures;
     this._sounds = this._scene.sound;
-    this.scene.events.once('exit', this.dispose, this);
+    this.scene.events.once('dispose', this.dispose, this);
   }
 
   dispose(): void {
@@ -51,16 +51,14 @@ export class Loader implements IDisposable {
       return;
     }
     console.debug(`loading image ${key}`);
-    let handler = (event: Event) => {
+    this.pending++;
+    let img = new Image();
+    img.onload = (event: Event) => {
       let img = <HTMLImageElement>event.target;
       this._textures.add(key, new Texture(this._textures, key, img));
-      img.removeEventListener('load', handler);
       this.pending--;
       console.debug(`image ${key} loaded`);
     }
-    this.pending++;
-    let img = new Image();
-    img.addEventListener('load', handler, { once: true });
     img.src = url;
   }
 
@@ -73,15 +71,13 @@ export class Loader implements IDisposable {
     }
     console.debug(`loading sound ${key}`);
     this.pending++;
-    let handler = (event: Event) => {
-      let audio = <HTMLAudioElement>event.target;
+    let audio = new Audio();
+    audio.oncanplaythrough = () => {
       this._sounds.add(key, new Sound(this._sounds, key, audio));
-      audio.removeEventListener('canplay', handler);
+      audio.oncanplaythrough = undefined;
       this.pending--;
       console.debug(`sound ${key} loaded`);
-    }
-    let audio = new Audio();
-    audio.addEventListener('canplay', handler, { once: true });
+    };
     audio.src = url;
   }
 }

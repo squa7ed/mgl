@@ -22,21 +22,31 @@ export class InputPlugin extends EventEmitter implements IDisposable {
     let manager = this._manager;
     let pointer = manager.pointer;
     if (pointer.isActive) {
+      if (pointer.isDown) {
+        this.emit('pointerDown', this._scene, pointer);
+      }
+      if (pointer.isMove) {
+        this.emit('pointerMove', this._scene, pointer);
+      }
+      if (pointer.isUp) {
+        this.emit('pointerUp', this._scene, pointer);
+        this.emit('pointerClick', this._scene, pointer);
+      }
       let list = this._getPointerOverItems(pointer);
       let len = list.length;
       if (len > 0) {
         this._sortInteractiveObjects(list);
         this._invokeEvents(list, pointer);
-        pointer.reset();
       }
     }
   }
 
-  enable(displayObject: DisplayObject): void {
-    if (displayObject.input && displayObject.input.isEnabled) {
-      return;
-    }
-    displayObject.setInteractive();
+  enable(...displayObjects: DisplayObject[]): void {
+    displayObjects.forEach(displayObject => {
+      if (!displayObject.input || !displayObject.input.isEnabled) {
+        displayObject.setInteractive();
+      }
+    });
   }
 
   createInteractiveObject(target: DisplayObject): InteractiveObject {
@@ -77,8 +87,15 @@ export class InputPlugin extends EventEmitter implements IDisposable {
         this.emit('displayObjectOver', item.target, pointer);
       }
       if (pointer.isUp) {
-        item.target.emit('pointerUp', item.target, pointer);
-        this.emit('displayObjectOut', item.target, pointer);
+        if (!item.isPointerOver(pointer)) {
+          item.target.emit('pointerCancel')
+          this.emit('displayObjectCancel', item.target, pointer);
+        } else {
+          item.target.emit('pointerUp', item.target, pointer);
+          this.emit('displayObjectUp', item.target, pointer);
+          item.target.emit('pointerClick', item.target, pointer);
+          this.emit('displayObjectClick', item.target, pointer);
+        }
       }
     });
   }

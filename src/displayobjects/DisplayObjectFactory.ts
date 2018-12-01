@@ -18,7 +18,7 @@ export class DisplayObjectFactory implements IDisposable {
   }
 
   sprite(x: number, y: number, texture: string, width?: number, height?: number): Sprite {
-    let item = new Sprite(this._scene, x, y, texture);
+    let item = new Sprite(this._scene, x, y, texture, width, height);
     this._items.add(item);
     return item;
   }

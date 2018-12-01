@@ -5,8 +5,6 @@ import { Scene } from './scene/Scene';
 import { SoundManager } from './sound/SoundManager';
 import { SceneManager } from './scene/SceneManager';
 
-type SceneConfig = { key: string, ctor: new (game: Game, key: string) => Scene };
-
 export type GameConfig = {
   canvas: HTMLCanvasElement,
   scenes: SceneConfig[],
@@ -14,6 +12,14 @@ export type GameConfig = {
   width?: number,
   background?: string
 }
+
+type SceneConfig = {
+  key: string,
+  ctor: new (...params: any[]) => Scene,
+  autoStart?: boolean,
+  data?: any
+};
+
 
 export class Game {
   constructor(public readonly config: GameConfig) {
@@ -52,8 +58,6 @@ export class Game {
 
   private _deltaTime: number;
 
-  private _currentScene: Scene;
-
   readonly context: CanvasRenderingContext2D;
 
   readonly events: EventEmitter;
@@ -68,21 +72,21 @@ export class Game {
 
   readonly scene: SceneManager;
 
-  start(): void {
+  private start(): void {
     this._lastUpdateTime = performance.now();
     this.startAnimation();
   }
 
-  startAnimation(): number {
+  private startAnimation(): number {
     return requestAnimationFrame(this._bindLoop);
   }
 
-  loop(): void {
+  private loop(): void {
     this.update();
     this.startAnimation();
   }
 
-  update(): void {
+  private update(): void {
     let now = performance.now();
     this._deltaTime = now - this._lastUpdateTime;
     this.input.update(now, this._deltaTime);

@@ -236,10 +236,9 @@ export abstract class DisplayObject extends EventEmitter implements IDisposable 
     if (!this.scene) {
       return;
     }
-    if (this.input) {
-      this.input.disable();
-    }
+    this.input && this.input.dispose();
     this.data.clear();
+    this._input = undefined;
     this._data = undefined;
     this._scene = undefined;
   }
