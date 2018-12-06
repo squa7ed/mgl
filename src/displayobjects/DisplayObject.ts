@@ -5,7 +5,7 @@ import { InteractiveObject } from "../input/InteractiveObject";
 import { IDisposable } from "../Utils";
 
 export abstract class DisplayObject extends EventEmitter implements IDisposable {
-  constructor(private _scene: Scene) {
+  constructor(protected _scene: Scene) {
     super();
     this._scene = _scene;
     // coordinate
@@ -68,10 +68,10 @@ export abstract class DisplayObject extends EventEmitter implements IDisposable 
   get scene() { return this._scene; }
   // coordinate
   get x() { return this._x; }
-  set x(value) { this._x = value; }
+  set x(value) { this._x = value; this._updateDisplayValues(); }
 
   get y() { return this._y; }
-  set y(value) { this._y = value; }
+  set y(value) { this._y = value; this._updateDisplayValues(); }
 
   // size
   get width() { return this._width; }

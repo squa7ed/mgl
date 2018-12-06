@@ -16,6 +16,16 @@ export class DisplayList implements IDisposable {
     }
   }
 
+  remove(item: DisplayObject, destroy: boolean) {
+    let index = this.getIndexOf(item);
+    if (index !== -1) {
+      let item = this._items.splice(index, 1)[0];
+      if (destroy) {
+        item.dispose();
+      }
+    }
+  }
+
   render(context: CanvasRenderingContext2D): void {
     this._items.forEach(sprite => sprite.render(context));
   }

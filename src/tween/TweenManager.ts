@@ -21,17 +21,17 @@ export default class TweenManager {
   }
 
   update(time: number, dt: number) {
-    let list = this._tweens.splice(0);
-    this._pendingRemove.push(...list.filter(tween => tween.state === TweenState.FINISHED));
+    this._pendingRemove.push(...this._tweens.filter(tween => tween.state === TweenState.FINISHED));
     this._pendingRemove.forEach(tween => {
-      let index = list.indexOf(tween);
+      let index = this._tweens.indexOf(tween);
       if (index !== -1) {
-        list.splice(index, 1)[0].dispose();
+        this._tweens.splice(index, 1)[0].dispose();
       }
     });
     this._pendingRemove.length = 0;
-    list.push(...this._pendingAdd.splice(0));
-    this._tweens = list;
+    this._pendingAdd.forEach(tween => tween.state = TweenState.PLAYING);
+    this._tweens.push(...this._pendingAdd);
+    this._pendingAdd.length = 0;
     this._tweens.forEach(tween => {
       tween.update(time, dt);
     });

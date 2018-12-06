@@ -28,6 +28,17 @@ export function GetValue(obj: any, key: string, defaultValue: any) {
   return defaultValue;
 }
 
+export function noop() { }
+
 export interface IDisposable {
   dispose(): void;
+}
+
+/**
+ * return a random integer between min (inclusive) and max (exclusive);
+ * @param min min value, inclusive
+ * @param max max value, exclusive
+ */
+export function between(min: number, max: number): number {
+  return Math.floor(Math.random() * (max - min) + min);
 }
