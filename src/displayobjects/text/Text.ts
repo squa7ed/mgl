@@ -3,7 +3,7 @@ import { Scene } from "../../scene/Scene";
 import { TextStyleType, TextStyle } from "./TextStyle";
 
 export class Text extends DisplayObject {
-  constructor(scene: Scene, x: number, y: number, text: string, style: TextStyleType) {
+  constructor(scene: Scene, x: number, y: number, text: string, style?: TextStyleType) {
     super(scene);
     this.x = x;
     this.y = y;

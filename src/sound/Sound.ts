@@ -7,6 +7,12 @@ export class Sound implements IDisposable {
 
   get key() { return this._key; }
 
+  get muted() { return this._soundSource.muted; }
+
+  set muted(value) {
+    this._soundSource.muted = value;
+  }
+
   private _isPlaying: boolean = false;
 
   get isPlaying() { return this._isPlaying; }
@@ -18,6 +24,9 @@ export class Sound implements IDisposable {
   }
 
   play(): void {
+    if (this.muted) {
+      return;
+    }
     this._soundSource.currentTime = 0;
     this._soundSource.play();
     this._isPlaying = true;

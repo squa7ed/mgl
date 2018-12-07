@@ -23,7 +23,7 @@ export class DisplayObjectFactory implements IDisposable {
     return item;
   }
 
-  text(x: number, y: number, text: string, style: TextStyleType): Text {
+  text(x: number, y: number, text: string, style?: TextStyleType): Text {
     let item = new Text(this._scene, x, y, text, style);
     this._items.add(item);
     return item;

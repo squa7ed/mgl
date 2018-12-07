@@ -9,6 +9,19 @@ export class SoundManager implements IDisposable {
 
   private _sounds: Map<string, Sound>;
 
+  private _mute: boolean;
+
+  get muted() { return this._mute }
+
+  set muted(value) {
+    if (this._mute === value) {
+      return;
+    }
+    this._mute = value;
+    this._sounds.forEach(sound => sound.muted = value);
+    this._game.events.emit('mute', value);
+  }
+
   add(key: string, sound: Sound): void {
     if (this.has(key)) {
       return;
@@ -25,6 +38,9 @@ export class SoundManager implements IDisposable {
   }
 
   play(key: string): void {
+    if (this.muted) {
+      return;
+    }
     let sound = this.get(key);
     if (sound.isPlaying) {
       sound.stop();
