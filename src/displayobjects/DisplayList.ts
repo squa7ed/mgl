@@ -10,6 +10,8 @@ export class DisplayList implements IDisposable {
 
   private _items: DisplayObject[];
 
+  get items() { return this._items; }
+
   add(item: DisplayObject): void {
     if (this._items.indexOf(item) === -1) {
       this._items.push(item);

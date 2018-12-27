@@ -47,8 +47,8 @@ export class Text extends DisplayObject {
     context.globalAlpha = this.opacity;
     context.fillStyle = this.style.color;
     context.font = this.style.font;
-    context.textAlign = "left";
-    context.textBaseline = "top";
+    context.textAlign = this.style.align;
+    context.textBaseline = this.style.baseline;
     context.translate(this.x + this.width * this.anchorX, this.y + this.height * this.anchorY);
     context.scale(this.scaleX, this.scaleY);
     context.rotate(this.rotation * Math.PI / 180);
